@@ -49,7 +49,7 @@ def GetPowerAllocation(output_data, num_of_cells, num_of_CUEs, num_of_D2Ds):
     # Aruguments:
 
     output_data: numpy array
-        The numpy array which is obtained from the output layer of the model (prediction).
+        Target data or prediction which is obtained from the output layer of the model.
         The computation of prediction is done in batches, so the firxt axis stands for batch size.
     num_of_cells: int
         Number of the cells in the cellular system.
