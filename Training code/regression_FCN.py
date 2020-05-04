@@ -70,7 +70,6 @@ history = model.fit(x_train, y_train, batch_size, epochs, verbose = 1, validatio
 channel_gain_matrix = simulation.GetChannelGainMatrix(x_test, num_of_cells, num_of_CUEs, num_of_D2Ds)
 QoS_of_CUE = simulation.GetQoSofCUE(channel_gain_matrix, num_of_cells, num_of_CUEs)
 
-# Optimal power allocation
 opt_CUE_power, opt_D2D_power = simulation.GetPowerAllocation(y_test, num_of_cells, num_of_CUEs, num_of_D2Ds)
 opt_CUE_rate, opt_D2D_rate = simulation.GetDataRate(channel_gain_matrix, opt_CUE_power, opt_D2D_power)
 
@@ -98,41 +97,33 @@ opt_UIR = simulation.GetUIR(opt_CUE_rate, opt_D2D_rate, opt_CUE_power, opt_D2D_p
 print(f"Optimal realization infeasibility rate: {opt_RIR}")
 print(f"Optimal user infeasibility rate: {opt_UIR}")
 
-# Predicted power allocation
 pred_y_test = model.predict(x_test)
 
-pred_CUE_power, pred_D2D_power = simulation.GetPowerAllocation(output_data = pred_y_test, num_of_cells = num_of_cells,
-                                                               num_of_CUEs = num_of_CUEs, num_of_D2Ds = num_of_D2Ds)
+pred_CUE_power, pred_D2D_power = simulation.GetPowerAllocation(pred_y_test, num_of_cells, num_of_CUEs, num_of_D2Ds)
 
-pred_CUE_rate, pred_D2D_rate = simulation.GetDataRate(channel_gain_matrix = channel_gain_matrix,
-                                                      CUE_power = pred_CUE_power, D2D_power = pred_D2D_power)
+pred_CUE_rate, pred_D2D_rate = simulation.GetDataRate(channel_gain_matrix, pred_CUE_power, pred_D2D_power)
 
-pred_system_sum_rate, pred_CUE_sum_rate, pred_D2D_sum_rate = simulation.GetSumRate(CUE_rate = pred_CUE_rate, D2D_rate = pred_D2D_rate)
-pred_system_power_consumption, pred_CUE_power_consumption, pred_D2D_power_consumption = simulation.GetPowerConsumption(CUE_power = pred_CUE_power, D2D_power = pred_D2D_power)
-pred_system_EE, pred_CUE_EE, pred_D2D_EE = simulation.GetEnergyEfficiency(system_sum_rate = pred_system_sum_rate, CUE_sum_rate = pred_CUE_sum_rate,
-                                                                          D2D_sum_rate = pred_D2D_sum_rate, system_power_consumption = pred_system_power_consumption,
-                                                                          CUE_power_consumption = pred_CUE_power_consumption, D2D_power_consumption = pred_D2D_power_consumption)
+pred_system_sum_rate, pred_CUE_sum_rate, pred_D2D_sum_rate = simulation.GetSumRate(pred_CUE_rate, pred_D2D_rate)
+pred_system_power_consumption, pred_CUE_power_consumption, pred_D2D_power_consumption = simulation.GetPowerConsumption(pred_CUE_power, pred_D2D_power)
+pred_system_EE, pred_CUE_EE, pred_D2D_EE = simulation.GetEnergyEfficiency(pred_system_sum_rate, pred_CUE_sum_rate, pred_D2D_sum_rate, pred_system_power_consumption, pred_CUE_power_consumption, pred_D2D_power_consumption)
 
-pred_avg_system_sum_rate, pred_avg_CUE_sum_rate, pred_avg_D2D_sum_rate = simulation.GetAvgSumRate(system_sum_rate = pred_system_sum_rate, CUE_sum_rate = pred_CUE_sum_rate, 
-                                                                                                  D2D_sum_rate = pred_D2D_sum_rate)
+pred_avg_system_sum_rate, pred_avg_CUE_sum_rate, pred_avg_D2D_sum_rate = simulation.GetAvgSumRate(pred_system_sum_rate, pred_CUE_sum_rate, pred_D2D_sum_rate)
 print(f"Predicted average system sum rate: {pred_avg_system_sum_rate}")
 print(f"Predicted average CUE sum rate: {pred_avg_CUE_sum_rate}")
 print(f"Predicted average D2D sum rate: {pred_avg_D2D_sum_rate}")
 
-pred_avg_system_power_consumption, pred_avg_CUE_power_consumption, pred_avg_D2D_power_consumption = simulation.GetAvgPowerConsumption(system_power_consumption = pred_system_power_consumption,
-                                                                                                                                      CUE_power_consumption = pred_CUE_power_consumption,
-                                                                                                                                      D2D_power_consumption = pred_D2D_power_consumption)
+pred_avg_system_power_consumption, pred_avg_CUE_power_consumption, pred_avg_D2D_power_consumption = simulation.GetAvgPowerConsumption(pred_system_power_consumption, pred_CUE_power_consumption, pred_D2D_power_consumption)
 print(f"Predicted average system power consumption: {pred_avg_system_power_consumption}")
 print(f"Predicted average CUE power consumption: {pred_avg_CUE_power_consumption}")
 print(f"Predicted average D2D power consumption: {pred_avg_D2D_power_consumption}")
 
-pred_avg_system_EE, pred_avg_CUE_EE, pred_avg_D2D_EE = simulation.GetAvgEnergyEfficiency(system_EE = pred_system_EE, CUE_EE = pred_CUE_EE, D2D_EE = pred_D2D_EE)
+pred_avg_system_EE, pred_avg_CUE_EE, pred_avg_D2D_EE = simulation.GetAvgEnergyEfficiency(pred_system_EE, pred_CUE_EE, pred_D2D_EE)
 print(f"Predicted average system energy efficiency: {pred_avg_system_EE}")
 print(f"Predicted average CUE energy efficiency: {pred_avg_CUE_EE}")
 print(f"Predicted average D2D energy efficiency: {pred_avg_D2D_EE}")
 
-pred_RIR = simulation.GetRIR(CUE_rate = pred_CUE_rate, D2D_rate = pred_D2D_rate, CUE_power = pred_CUE_power, D2D_power = pred_D2D_power, QoS_of_CUE = QoS_of_CUE)
-pred_UIR = simulation.GetUIR(CUE_rate = pred_CUE_rate, D2D_rate = pred_D2D_rate, CUE_power = pred_CUE_power, D2D_power = pred_D2D_power, QoS_of_CUE = QoS_of_CUE)
+pred_RIR = simulation.GetRIR(pred_CUE_rate, pred_D2D_rate, pred_CUE_power, pred_D2D_power, QoS_of_CUE)
+pred_UIR = simulation.GetUIR(pred_CUE_rate, pred_D2D_rate, pred_CUE_power, pred_D2D_power, QoS_of_CUE)
 print(f"Predicted realization infeasibility rate: {pred_RIR}")
 print(f"Predicted user infeasibility rate: {pred_UIR}")
 
