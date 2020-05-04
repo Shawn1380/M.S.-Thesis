@@ -78,7 +78,7 @@ opt_system_power_consumption, opt_CUE_power_consumption, opt_D2D_power_consumpti
 opt_system_EE, opt_CUE_EE, opt_D2D_EE = simulation.GetEnergyEfficiency(opt_system_sum_rate, opt_CUE_sum_rate, opt_D2D_sum_rate, opt_system_power_consumption, opt_CUE_power_consumption, opt_D2D_power_consumption)
 
 opt_avg_system_sum_rate, opt_avg_CUE_sum_rate, opt_avg_D2D_sum_rate = simulation.GetAvgSumRate(opt_system_sum_rate, opt_CUE_sum_rate, opt_D2D_sum_rate)
-print(f"Optimal average system sum rate: {opt_avg_system_sum_rate}")
+print(f"\nOptimal average system sum rate: {opt_avg_system_sum_rate}")
 print(f"Optimal average CUE sum rate: {opt_avg_CUE_sum_rate}")
 print(f"Optimal average D2D sum rate: {opt_avg_D2D_sum_rate}")
 
@@ -108,7 +108,7 @@ pred_system_power_consumption, pred_CUE_power_consumption, pred_D2D_power_consum
 pred_system_EE, pred_CUE_EE, pred_D2D_EE = simulation.GetEnergyEfficiency(pred_system_sum_rate, pred_CUE_sum_rate, pred_D2D_sum_rate, pred_system_power_consumption, pred_CUE_power_consumption, pred_D2D_power_consumption)
 
 pred_avg_system_sum_rate, pred_avg_CUE_sum_rate, pred_avg_D2D_sum_rate = simulation.GetAvgSumRate(pred_system_sum_rate, pred_CUE_sum_rate, pred_D2D_sum_rate)
-print(f"Predicted average system sum rate: {pred_avg_system_sum_rate}")
+print(f"\nPredicted average system sum rate: {pred_avg_system_sum_rate}")
 print(f"Predicted average CUE sum rate: {pred_avg_CUE_sum_rate}")
 print(f"Predicted average D2D sum rate: {pred_avg_D2D_sum_rate}")
 
