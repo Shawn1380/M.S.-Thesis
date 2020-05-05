@@ -433,7 +433,7 @@ def GetUIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
         CUE_UIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per user) of all CUEs.
         D2D_UIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per user) of all D2D pairs.
 
-        The infeasibility rate (per user) is the number of users with unmet needs (minimum rate requirement & power budget) divided by the total number of users.
+        The UIR is the number of users with unmet needs (minimum rate requirement & power budget) divided by the total number of users.
     """
 
     # Insert debugging assertions
@@ -489,7 +489,7 @@ def GetUIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
     return system_UIR, CUE_UIR, D2D_UIR
 
 def GetRIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
-    """ Return infeasibility rate (per realization) of power allocation strategies.
+    """ Return system infeasibility rate (per realization), CUE infeasibility rate (per realization), and D2D infeasibility rate (per realization) in numpy arrays.
 
     # Arguments:
 
@@ -508,9 +508,12 @@ def GetRIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
 
     # Return: 
      
-    infeasibility_rate: float
-        Infeasibility rate (per realization).
-        The infeasibility rate (per realization) is the number of infeasible realizations (at least one user's needs is unmet) divided by the total number of realizations.
+    Tuple of numpy arrays: (system_RIR, CUE_RIR, D2D_RIR)
+        system_RIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per realization) of the multi-cell system.
+        CUE_RIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per realization) of all CUEs.
+        D2D_RIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per realization) of all D2D pairs.
+
+        If there is a user's need are not met, the RIR is 0; otherwise, the RIR is 1.
     """
 
     # Insert debugging assertions
@@ -520,37 +523,52 @@ def GetRIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
     assert type(D2D_power) is np.ndarray, "The 'D2D_power' must be numpy array."
     assert type(QoS_of_CUE) is np.ndarray, "The 'QoS_of_CUE' must be numpy array."
 
-    # Get the size of batch dimension
-    batch_size = len(CUE_rate)
-
-    # Initialization  of variables
-    infeasible_realizations = 0
-    total_realizations = batch_size
+    # Get the size of each dimension
+    batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells = (i for i in D2D_rate.shape)
 
     # Define inner function
     def inner(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
 
-        # CUE's power budget limitation
-        if np.any(CUE_power >= constant.Pmax) or np.any(CUE_power <= 0):
-            return 1
-        # CUE's minimum rate requirement
-        if np.any(CUE_rate <= QoS_of_CUE):
-            return 1
-        # D2D pair's power budget limitation
-        if np.any(np.sum(D2D_power, axis = 1) >= constant.Pmax) or np.any(D2D_power <= 0):
-            return 1
-        # D2D pair's minimum rate requirement
-        if np.any(np.sum(D2D_rate, axis = 1) <= constant.QoS_of_D2D):
-            return 1
+        # Initialization of boolean numpy arrays
+        CUE_feasible = np.ones((num_of_CUEs, 1, num_of_cells), dtype = bool)
+        D2D_feasible = np.ones((num_of_D2Ds, 1, num_of_cells), dtype = bool)
 
-        return 0
+        # CUE's power budget limitation
+        CUE_feasible = np.logical_and(CUE_feasible, CUE_power <= constant.Pmax)
+        CUE_feasible = np.logical_and(CUE_feasible, CUE_power >= 0)
+        
+        # CUE's minimum rate requirement
+        CUE_feasible = np.logical_and(CUE_feasible, CUE_rate >= QoS_of_CUE)
+
+        # D2D pair's power budget limitation
+        D2D_feasible = np.logical_and(D2D_feasible, np.sum(D2D_power, axis = 1, keepdims = True) <= constant.Pmax)
+        for index in range(num_of_CUEs):
+            D2D_feasible = np.logical_and(D2D_feasible, D2D_power[:, [index], :] >= 0)
+            
+        # D2D pair's minimum rate requirement
+        D2D_feasible = np.logical_and(D2D_feasible, np.sum(D2D_rate, axis = 1, keepdims = True) >= constant.QoS_of_D2D)
+
+        # Calculate the number of infeasible CUEs and infeasible D2D pairs
+        infeasible_CUE = np.count_nonzero(CUE_feasible == False)
+        infeasible_D2D = np.count_nonzero(D2D_feasible == False)
+
+        # Calculate system infeasibility rate (per realization), CUE infeasibility rate (per realization), and D2D infeasibility rate (per realization)
+        system_RIR = 1 if (infeasible_CUE + infeasible_D2D) > 0 else 0
+        CUE_RIR = 1 if infeasible_CUE > 0 else 0
+        D2D_RIR = 1 if infeasible_D2D > 0 else 0
+
+        # Return system infeasibility rate (per realization), CUE infeasibility rate (per realization), and D2D infeasibility rate (per realization)
+        return system_RIR, CUE_RIR, D2D_RIR 
+
+    # Initialization of numpy arrays
+    system_RIR, CUE_RIR, D2D_RIR = [np.zeros(batch_size) for _ in range(3)]
 
     # Loop over the realizations in the batch
-    for CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE in zip(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
-        infeasible_realizations += inner(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE)
+    for index, (CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE) in enumerate(zip(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE)):
+        system_RIR[index], CUE_RIR[index], D2D_RIR[index] = inner(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE)
 
-    # Return infeasibility rate (per realization)
-    return infeasible_realizations / total_realizations
+    # Return system infeasibility rate (per realization), CUE infeasibility rate (per realization), and D2D infeasibility rate (per realization)
+    return system_RIR, CUE_RIR, D2D_RIR
 
 def GetAvgSumRate(system_sum_rate, CUE_sum_rate, D2D_sum_rate):
     """ Return average system sum rate, average CUE sum rate, and average D2D sum rate.
