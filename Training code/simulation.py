@@ -313,7 +313,7 @@ def GetSumRate(CUE_rate, D2D_rate):
         return system_sum_rate, CUE_sum_rate, D2D_sum_rate
 
     # Initialization of numpy arrays
-    system_sum_rate, CUE_sum_rate, D2D_sum_rate = [np.zeros(batch_size) for _ in range(3)]
+    system_sum_rate, CUE_sum_rate, D2D_sum_rate = (np.zeros(batch_size) for _ in range(3))
 
     # Loop over the realizations in the batch
     for index, (CUE_rate, D2D_rate) in enumerate(zip(CUE_rate, D2D_rate)):
@@ -350,7 +350,7 @@ def GetPowerConsumption(CUE_power, D2D_power):
     # Define inner function
     def inner(CUE_power, D2D_power):
         
-        # Calculate the system power consumption, CUE power consumption, and D2D power consumption
+        # Calculate system power consumption, CUE power consumption, and D2D power consumption
         CUE_power_consumption = np.sum(CUE_power) / constant.PA_inefficiency_factor + constant.circuit_power * num_of_cells * num_of_CUEs
         D2D_power_consumption = np.sum(D2D_power) / constant.PA_inefficiency_factor + constant.circuit_power * num_of_cells * num_of_D2Ds * 2
         system_power_consumption = CUE_power_consumption + D2D_power_consumption
@@ -359,7 +359,7 @@ def GetPowerConsumption(CUE_power, D2D_power):
         return system_power_consumption, CUE_power_consumption, D2D_power_consumption
 
     # Initialization of numpy arrays
-    system_power_consumption, CUE_power_consumption, D2D_power_consumption = [np.zeros(batch_size) for _ in range(3)]
+    system_power_consumption, CUE_power_consumption, D2D_power_consumption = (np.zeros(batch_size) for _ in range(3))
 
     # Loop over the realizations in the batch
     for index, (CUE_power, D2D_power) in enumerate(zip(CUE_power, D2D_power)):
@@ -402,7 +402,7 @@ def GetEnergyEfficiency(system_sum_rate, CUE_sum_rate, D2D_sum_rate, system_powe
     assert type(CUE_power_consumption) is np.ndarray, "The 'CUE_power_consumption' must be numpy array."
     assert type(D2D_power_consumption) is np.ndarray, "The 'D2D_power_consumption' must be numpy array."
 
-    # Calculate the system energy effciency, CUE energy effciency, and D2D energy effciency 
+    # Calculate system energy effciency, CUE energy effciency, and D2D energy effciency 
     system_EE = np.divide(system_sum_rate, system_power_consumption)
     CUE_EE = np.divide(CUE_sum_rate, CUE_power_consumption)
     D2D_EE = np.divide(D2D_sum_rate, D2D_power_consumption)
@@ -411,7 +411,7 @@ def GetEnergyEfficiency(system_sum_rate, CUE_sum_rate, D2D_sum_rate, system_powe
     return system_EE, CUE_EE, D2D_EE
 
 def GetUIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
-    """ Return infeasibility rate (per user) of power allocation strategies.
+    """ Return system infeasibility rate (per user), CUE infeasibility rate (per user), and D2D infeasibility rate (per user) in numpy arrays.
 
     # Arguments:
 
@@ -427,9 +427,12 @@ def GetUIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
         The minimum rate requirement of all CUEs (bps/Hz).
 
     # Return: 
-     
-    infeasibility_rate: float
-        Infeasibility rate (per user).
+    
+    Tuple of numpy arrays: (system_UIR, CUE_UIR, D2D_UIR)
+        system_UIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per user) of the multi-cell system.
+        CUE_UIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per user) of all CUEs.
+        D2D_UIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per user) of all D2D pairs.
+
         The infeasibility rate (per user) is the number of users with unmet needs (minimum rate requirement & power budget) divided by the total number of users.
     """
 
@@ -442,10 +445,9 @@ def GetUIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
 
     # Get the size of each dimension
     batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells = (i for i in D2D_rate.shape)
-
-    # Initialization of variables
-    infeasible_users = 0
-    total_users = (num_of_D2Ds + num_of_CUEs) * num_of_cells * batch_size
+    total_users = (num_of_CUEs + num_of_D2Ds) * num_of_cells
+    total_CUEs = num_of_CUEs * num_of_cells
+    total_D2Ds = num_of_D2Ds * num_of_cells
 
     # Define inner function
     def inner(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
@@ -462,21 +464,29 @@ def GetUIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
         CUE_feasible = np.logical_and(CUE_feasible, CUE_rate >= QoS_of_CUE)
 
         # D2D pair's power budget limitation
-        D2D_feasible = np.logical_and(D2D_feasible, np.sum(D2D_power, axis = 1) <= constant.Pmax)
+        D2D_feasible = np.logical_and(D2D_feasible, np.sum(D2D_power, axis = 1, keepdims = True) <= constant.Pmax)
         for index in range(num_of_CUEs):
             D2D_feasible = np.logical_and(D2D_feasible, D2D_power[:, [index], :] >= 0)
             
         # D2D pair's minimum rate requirement
-        D2D_feasible = np.logical_and(D2D_feasible, np.sum(D2D_rate, axis = 1) >= constant.QoS_of_D2D)
+        D2D_feasible = np.logical_and(D2D_feasible, np.sum(D2D_rate, axis = 1, keepdims = True) >= constant.QoS_of_D2D)
 
-        return np.count_nonzero(CUE_feasible == False) + np.count_nonzero(D2D_feasible == False)
+        # Calculate the number of infeasible CUEs and infeasible D2D pairs
+        infeasible_CUE = np.count_nonzero(CUE_feasible == False)
+        infeasible_D2D = np.count_nonzero(D2D_feasible == False)
+
+        # Return system infeasibility rate (per user), CUE infeasibility rate (per user), and D2D infeasibility rate (per user)
+        return (infeasible_CUE + infeasible_D2D) / total_users, infeasible_CUE / total_CUEs, infeasible_D2D / total_D2Ds 
+
+    # Initialization of numpy arrays
+    system_UIR, CUE_UIR, D2D_UIR = [np.zeros(batch_size) for _ in range(3)]
 
     # Loop over the realizations in the batch
-    for CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE in zip(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
-        infeasible_users += inner(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE)
+    for index, (CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE) in enumerate(zip(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE)):
+        system_UIR[index], CUE_UIR[index], D2D_UIR[index] = inner(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE)
 
-    # Return infeasibility rate (per user)
-    return infeasible_users / total_users
+    # Return system infeasibility rate (per user), CUE infeasibility rate (per user), and D2D infeasibility rate (per user)
+    return system_UIR, CUE_UIR, D2D_UIR
 
 def GetRIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
     """ Return infeasibility rate (per realization) of power allocation strategies.
