@@ -670,6 +670,40 @@ def GetAvgEnergyEfficiency(system_EE, CUE_EE, D2D_EE):
     # Return average system energy efficiency, average CUE energy efficiency, and average D2D energy efficiency
     return avg_system_EE, avg_CUE_EE, avg_D2D_EE
 
+def GetAvgUIR(system_UIR, CUE_UIR, D2D_UIR):
+    """ Return average system infeasibility rate (per user), average CUE infeasibility rate (per user), and average D2D infeasibility rate (per user) in numpy arrays.
+
+    # Arguments:
+
+    
+    system_UIR: numpy array with shape (batch_size, )
+        The infeasibility rate (per user) of the multi-cell system.
+    CUE_UIR: numpy array with shape (batch_size, )
+        The infeasibility rate (per user) of all CUEs.
+    D2D_UIR: numpy array with shape (batch_size, )
+        The infeasibility rate (per user) of all D2D pairs.
+
+    # Return:
+
+    Tuple of floats: (avg_system_UIR, avg_CUE_UIR, avg_D2D_UIR)
+        avg_system_UIR: Summation over all system infeasibility rate (per user) in batch divided by the number of the realizations.
+        avg_CUE_UIR: Summation over all CUE infeasibility rate (per user) in batch divided by the number of the realizations.
+        avg_D2D_UIR: Summation over all D2D infeasibility rate (per user) in batch divided by the number of the realizations.
+    """
+
+    # Insert debugging assertions
+    assert type(system_UIR) is np.ndarray, "The 'system_UIR' must be numpy array."
+    assert type(CUE_UIR) is np.ndarray, "The 'CUE_UIR' must be numpy array."
+    assert type(D2D_UIR) is np.ndarray, "The 'D2D_UIR' must be numpy array."
+
+    # Calculate average system infeasibility rate (per user), average CUE infeasibility rate (per user), and average D2D infeasibility rate (per user)
+    avg_system_UIR = np.mean(system_UIR)
+    avg_CUE_UIR = np.mean(CUE_UIR)
+    avg_D2D_UIR = np.mean(D2D_UIR)
+
+    # Return average system infeasibility rate (per user), average CUE infeasibility rate (per user), and average D2D infeasibility rate (per user)
+    return avg_system_UIR, avg_CUE_UIR, avg_D2D_UIR
+
 def PrintDataRate(CUE_rate, D2D_rate, QoS_of_CUE, header, realization_index):
     """ Given the specific realization, print the data rate of all CUEs and D2D pairs.
 
