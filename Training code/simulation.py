@@ -675,7 +675,6 @@ def GetAvgUIR(system_UIR, CUE_UIR, D2D_UIR):
 
     # Arguments:
 
-    
     system_UIR: numpy array with shape (batch_size, )
         The infeasibility rate (per user) of the multi-cell system.
     CUE_UIR: numpy array with shape (batch_size, )
@@ -703,6 +702,39 @@ def GetAvgUIR(system_UIR, CUE_UIR, D2D_UIR):
 
     # Return average system infeasibility rate (per user), average CUE infeasibility rate (per user), and average D2D infeasibility rate (per user)
     return avg_system_UIR, avg_CUE_UIR, avg_D2D_UIR
+
+def GetAvgRIR(system_RIR, CUE_RIR, D2D_RIR):
+    """ Return average system infeasibility rate (per realization), average CUE infeasibility rate (per realization), and average D2D infeasibility rate (per realization) in numpy arrays.
+
+    # Arguments:
+
+    system_RIR: numpy array with shape (batch_size, )
+        The infeasibility rate (per realization) of the multi-cell system.
+    CUE_RIR: numpy array with shape (batch_size, )
+        The infeasibility rate (per realization) of all CUEs.
+    D2D_RIR: numpy array with shape (batch_size, )
+        The infeasibility rate (per realization) of all D2D pairs.
+
+    # Return:
+
+    Tuple of floats: (avg_system_RIR, avg_CUE_RIR, avg_D2D_RIR)
+        avg_system_RIR: Summation over all system infeasibility rate (per realization) in batch divided by the number of the realizations.
+        avg_CUE_RIR: Summation over all CUE infeasibility rate (per realization) in batch divided by the number of the realizations.
+        avg_D2D_RIR: Summation over all D2D infeasibility rate (per realization) in batch divided by the number of the realizations.
+    """
+
+    # Insert debugging assertions
+    assert type(system_RIR) is np.ndarray, "The 'system_RIR' must be numpy array."
+    assert type(CUE_RIR) is np.ndarray, "The 'CUE_RIR' must be numpy array."
+    assert type(D2D_RIR) is np.ndarray, "The 'D2D_RIR' must be numpy array."
+
+    # Calculate average system infeasibility rate (per realization), average CUE infeasibility rate (per realization), and average D2D infeasibility rate (per realization)
+    avg_system_RIR = np.mean(system_RIR)
+    avg_CUE_RIR = np.mean(CUE_RIR)
+    avg_D2D_RIR = np.mean(D2D_RIR)
+
+    # Return average system infeasibility rate (per realization), average CUE infeasibility rate (per realization), and average D2D infeasibility rate (per realization)
+    return avg_system_RIR, avg_CUE_RIR, avg_D2D_RIR
 
 def PrintDataRate(CUE_rate, D2D_rate, QoS_of_CUE, header, realization_index):
     """ Given the specific realization, print the data rate of all CUEs and D2D pairs.
