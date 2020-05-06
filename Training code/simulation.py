@@ -461,7 +461,7 @@ def GetUIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
         CUE_feasible = np.logical_and(CUE_feasible, CUE_power >= 0)
         
         # CUE's minimum rate requirement
-        CUE_feasible = np.logical_and(CUE_feasible, CUE_rate >= QoS_of_CUE)
+        CUE_feasible = np.logical_and(CUE_feasible, CUE_rate >= QoS_of_CUE - 1e-4)
 
         # D2D pair's power budget limitation
         D2D_feasible = np.logical_and(D2D_feasible, np.sum(D2D_power, axis = 1, keepdims = True) <= constant.Pmax)
@@ -469,7 +469,7 @@ def GetUIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
             D2D_feasible = np.logical_and(D2D_feasible, D2D_power[:, [index], :] >= 0)
             
         # D2D pair's minimum rate requirement
-        D2D_feasible = np.logical_and(D2D_feasible, np.sum(D2D_rate, axis = 1, keepdims = True) >= constant.QoS_of_D2D)
+        D2D_feasible = np.logical_and(D2D_feasible, np.sum(D2D_rate, axis = 1, keepdims = True) >= constant.QoS_of_D2D - 1e-4)
 
         # Calculate the number of infeasible CUEs and infeasible D2D pairs
         infeasible_CUE = np.count_nonzero(CUE_feasible == False)
@@ -538,7 +538,7 @@ def GetRIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
         CUE_feasible = np.logical_and(CUE_feasible, CUE_power >= 0)
         
         # CUE's minimum rate requirement
-        CUE_feasible = np.logical_and(CUE_feasible, CUE_rate >= QoS_of_CUE)
+        CUE_feasible = np.logical_and(CUE_feasible, CUE_rate >= QoS_of_CUE - 1e-4)
 
         # D2D pair's power budget limitation
         D2D_feasible = np.logical_and(D2D_feasible, np.sum(D2D_power, axis = 1, keepdims = True) <= constant.Pmax)
@@ -546,7 +546,7 @@ def GetRIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
             D2D_feasible = np.logical_and(D2D_feasible, D2D_power[:, [index], :] >= 0)
             
         # D2D pair's minimum rate requirement
-        D2D_feasible = np.logical_and(D2D_feasible, np.sum(D2D_rate, axis = 1, keepdims = True) >= constant.QoS_of_D2D)
+        D2D_feasible = np.logical_and(D2D_feasible, np.sum(D2D_rate, axis = 1, keepdims = True) >= constant.QoS_of_D2D - 1e-4)
 
         # Calculate the number of infeasible CUEs and infeasible D2D pairs
         infeasible_CUE = np.count_nonzero(CUE_feasible == False)
