@@ -13,7 +13,7 @@ num_of_cells = 2
 num_of_CUEs = 2
 num_of_D2Ds = 2
 batch_size = 64
-epochs = 10
+epochs = 50
 
 # Get the image data format which Keras follows
 image_data_format = preprocessing.GetImageDataFormat()
@@ -29,32 +29,25 @@ reshaped_input_data = preprocessing.ReshapeInputData1D(input_data)
 (x_train, y_train), (x_test, y_test) = preprocessing.SplitDataset(reshaped_input_data, target_data, proportion = 0.8, shuffle = True)
 
 # Get the input shape of input data and the output shape of target data 
-input_shape = preprocessing.GetInputShape(reshaped_input_data)
-target_shape = preprocessing.GetTargetShape(target_data)                                                                  
+input_shape = preprocessing.GetInputShape(x_train)
+target_shape = preprocessing.GetTargetShape(y_train)
 
 # Build the model
 model = Sequential()
 
-model.add(Dense(units = 512, input_shape = input_shape,
-                activation = 'relu'))
+model.add(Dense(units = 512, activation = 'relu', input_shape = input_shape))
 
-model.add(Dense(units = 512,
-                activation = 'relu'))
+model.add(Dense(units = 512, activation = 'relu'))
 
-model.add(Dense(units = 512,
-                activation = 'relu'))
+model.add(Dense(units = 512, activation = 'relu'))
 
-model.add(Dense(units = 512,
-                activation = 'relu'))
+model.add(Dense(units = 512, activation = 'relu'))
 
-model.add(Dense(units = 512,
-                activation = 'relu'))
+model.add(Dense(units = 512, activation = 'relu'))
 
-model.add(Dense(units = 512,
-                activation = 'relu'))
+model.add(Dense(units = 512, activation = 'relu'))
 
-model.add(Dense(units = target_shape,
-                activation = 'linear'))
+model.add(Dense(units = target_shape, activation = 'linear'))
 
 # Summary
 model.summary()
