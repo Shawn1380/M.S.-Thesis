@@ -154,7 +154,7 @@ def GetTargetData(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples):
     else:
         raise TypeError("'num_of_samples' must be integer or tuple.")
 
-def SplitDataset(input_data, target_data, proportion = constant.data_proportion, shuffle = True):
+def SplitDataset(input_data, target_data, normalized_input_data = None, proportion = constant.data_proportion, shuffle = True):
     """ Return training set and testing set in tuple.
 
     # Arguments:
@@ -163,6 +163,8 @@ def SplitDataset(input_data, target_data, proportion = constant.data_proportion,
         The numpy array which is used as the input of the model. 
     target_data: numpy array
         The numpy array which is used as the target of the model's output.
+    normalized_input_data: numpy array, optional
+        The numpy array which is normalized input data.
     proportion: float, optional
         Float between 0 and 1. Fraction of the data to be used as training data.
     shuffle: boolean, optional
@@ -170,7 +172,12 @@ def SplitDataset(input_data, target_data, proportion = constant.data_proportion,
 
     # Return:
 
-    Tuple of Numpy arrays: (x_train, y_train), (x_test, y_test)
+    Tuple of Numpy arrays: (x_train, y_train, z_train), (x_test, y_test, z_test) if 'normalized_input_data' is not None
+        x_train and x_test are numpy arrays used for training, 
+        y_train and y_test are numpy arrays used for testing.
+        z_train and z_test are numpy arrays used for simulation.
+
+    Tuple of Numpy arrays: (x_train, y_train), (x_test, y_test) if 'normalized_input_data' is None
         x_train and x_test are numpy arrays used for training, 
         y_train and y_test are numpy arrays used for testing.
     """
@@ -178,6 +185,7 @@ def SplitDataset(input_data, target_data, proportion = constant.data_proportion,
     # Insert debugging assertions
     assert type(input_data) is np.ndarray, "The 'input_data' must be numpy array."
     assert type(target_data) is np.ndarray, "The 'target_data' must be numpy array."
+    assert type(normalized_input_data) is np.ndarray or normalized_input_data is None, "The 'normalized_input_data' must be numpy array or None."
     assert len(input_data) == len(target_data), "The 'input_data' and 'target_data' must have same size in the first axis (batch size)."
     assert 0 <= proportion <= 1, "The 'proportion' must be float between 0 and 1."
     assert type(shuffle) is bool, "The 'shuffle' must be boolean."
@@ -185,26 +193,54 @@ def SplitDataset(input_data, target_data, proportion = constant.data_proportion,
     # Initialization of variables
     num_of_samples = len(input_data)
 
-    # Shuffle the input numpy array along the first axis. The order is changed but their contents remains the same 
-    if shuffle:
-        randomize = np.arange(len(input_data))
-        np.random.shuffle(randomize)
-        input_data = input_data[randomize]
-        target_data = target_data[randomize]
+    if normalized_input_data is not None:
+        # Shuffle the input numpy array along the first axis. The order is changed but their contents remains the same 
+        if shuffle:
+            randomize = np.arange(len(normalized_input_data))
+            np.random.shuffle(randomize)
+            normalized_input_data = normalized_input_data[randomize]
+            input_data = input_data[randomize]
+            target_data = target_data[randomize]
 
-    # Calculate the slicing index
-    slice_index = int(num_of_samples * proportion)
+        # Calculate the slicing index
+        slice_index = int(num_of_samples * proportion)
 
-    # Split the input data into training part and testing part
-    x_train = input_data[:slice_index]
-    x_test = input_data[slice_index:]
+        # Split the normalized input data into training part and testing part
+        x_train = normalized_input_data[:slice_index]
+        x_test = normalized_input_data[slice_index:]
 
-    # Split the target data into training part and testing part
-    y_train = target_data[:slice_index]
-    y_test = target_data[slice_index:]
+        # Split the target data into training part and testing part
+        y_train = target_data[:slice_index]
+        y_test = target_data[slice_index:]
 
-    # Return traning set and testing set 
-    return (x_train, y_train), (x_test, y_test)
+        # Split the input data into training part and testing part
+        z_train = input_data[:slice_index]
+        z_test = input_data[slice_index:]
+
+        # Return traning set and testing set 
+        return (x_train, y_train, z_train), (x_test, y_test, z_test)
+
+    else:
+        # Shuffle the input numpy array along the first axis. The order is changed but their contents remains the same 
+        if shuffle:
+            randomize = np.arange(len(input_data))
+            np.random.shuffle(randomize)
+            input_data = input_data[randomize]
+            target_data = target_data[randomize]
+
+        # Calculate the slicing index
+        slice_index = int(num_of_samples * proportion)
+
+        # Split the input data into training part and testing part
+        x_train = input_data[:slice_index]
+        x_test = input_data[slice_index:]
+
+        # Split the target data into training part and testing part
+        y_train = target_data[:slice_index]
+        y_test = target_data[slice_index:]
+
+        # Return traning set and testing set 
+        return (x_train, y_train), (x_test, y_test)
 
 def GetInputShape(input_data):
     """ Return input shape (does not include the batch axis) of the given input numpy array.
