@@ -4,8 +4,7 @@ import R2
 import numpy as np
 import matplotlib.pyplot as plt
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten, BatchNormalization
-from keras.layers import Conv2D, MaxPooling2D, AveragePooling2D
+from keras.layers import Dense, Dropout, BatchNormalization
 from keras import optimizers, losses, metrics
 
 # Parameters setting
