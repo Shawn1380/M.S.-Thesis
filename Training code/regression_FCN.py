@@ -42,10 +42,6 @@ model.add(Dense(units = 512, activation = 'relu'))
 
 model.add(Dense(units = 512, activation = 'relu'))
 
-model.add(Dense(units = 512, activation = 'relu'))
-
-model.add(Dense(units = 512, activation = 'relu'))
-
 model.add(Dense(units = target_shape, activation = 'linear'))
 
 # Summary
