@@ -1,8 +1,8 @@
-from os.path import dirname, join as pjoin
 from keras import backend as K
 from preprocessing import Constant
 import scipy.io as sio
 import numpy as np
+import pathlib
 import sys
 
 def GetImageDataFormat():
@@ -56,11 +56,12 @@ def GetInputData(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples, image_d
         cols = 1 + num_of_D2Ds
         channels = num_of_cells
 
-        # Get the filname of the desired .mat file from the directory  
-        dataset_dir = pjoin(dirname(__file__), 'Dataset')
+        # Get the filname of the desired .mat file from the directory
+        dataset_dir = pathlib.Path.cwd().joinpath('dataset')
         cell_dir = '{} cell'.format(num_of_cells)
+        dataset_dir = dataset_dir.joinpath(cell_dir)
         filename = 'data_Cell_{}_CUE_{}_D2D_{}_{}.mat'.format(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples)
-        mat_fname = pjoin(dataset_dir, cell_dir, filename)
+        mat_fname = dataset_dir.joinpath(filename)
 
         # Load the .mat file contents
         mat_content = sio.loadmat(mat_fname)
@@ -125,10 +126,11 @@ def GetTargetData(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples):
         D2D_output_dim = num_of_D2Ds * num_of_CUEs * num_of_cells
 
         # Get the filname of the desired .mat file from the directory  
-        dataset_dir = pjoin(dirname(__file__), 'Dataset')
+        dataset_dir = pathlib.Path.cwd().joinpath('dataset')
         cell_dir = '{} cell'.format(num_of_cells)
+        dataset_dir = dataset_dir.joinpath(cell_dir)
         filename = 'data_Cell_{}_CUE_{}_D2D_{}_{}.mat'.format(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples)
-        mat_fname = pjoin(dataset_dir, cell_dir, filename)
+        mat_fname = dataset_dir.joinpath(filename)
 
         # Load the .mat file contents
         mat_content = sio.loadmat(mat_fname)
