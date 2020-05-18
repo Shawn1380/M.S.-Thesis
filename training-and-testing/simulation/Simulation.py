@@ -215,7 +215,7 @@ def GetDataRate(channel_gain_matrix, CUE_power, D2D_power):
     # Return data rate of all CUEs and all D2D pairs in batch
     return CUE_rate, D2D_rate
 
-def GetQoSofCUE(channel_gain_matrix, num_of_cells, num_of_CUEs):
+def GetQoSofCUE(channel_gain_matrix, num_of_cells, num_of_CUEs, rate_proportion = Constant.rate_proportion):
     """ Return QoS (minimum rate requirement) of all CUEs.
 
     # Arguments:
@@ -261,7 +261,7 @@ def GetQoSofCUE(channel_gain_matrix, num_of_cells, num_of_CUEs):
 
                 # Calculate CUE's maximum data rate
                 SINR = desired_signal / Constant.noise
-                QoS_of_CUE[i, 0, k] = np.log2(1 + SINR) * Constant.rate_proportion 
+                QoS_of_CUE[i, 0, k] = np.log2(1 + SINR) * rate_proportion 
 
         # Return QoS (minimum rate requirement) of all CUEs
         return QoS_of_CUE
@@ -485,7 +485,7 @@ def GetUIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
     for index, (CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE) in enumerate(zip(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE)):
         system_UIR[index], CUE_UIR[index], D2D_UIR[index] = inner(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE)
 
-    # Return system infeasibility rate (per user), CUE infeasibility rate (per user), and D2D infeasibility rate (per user)
+    # Return system infeasibility rate (per user), CUE infeasibility rate (per user), and D2D infeasibility rate (per user) in batch
     return system_UIR, CUE_UIR, D2D_UIR
 
 def GetRIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
@@ -567,7 +567,7 @@ def GetRIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
     for index, (CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE) in enumerate(zip(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE)):
         system_RIR[index], CUE_RIR[index], D2D_RIR[index] = inner(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE)
 
-    # Return system infeasibility rate (per realization), CUE infeasibility rate (per realization), and D2D infeasibility rate (per realization)
+    # Return system infeasibility rate (per realization), CUE infeasibility rate (per realization), and D2D infeasibility rate (per realization) in batch
     return system_RIR, CUE_RIR, D2D_RIR
 
 def GetAvgSumRate(system_sum_rate, CUE_sum_rate, D2D_sum_rate):

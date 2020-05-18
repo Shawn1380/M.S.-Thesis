@@ -12,20 +12,20 @@ num_of_cells = 2
 num_of_CUEs = 2
 num_of_D2Ds = 2
 batch_size = 64
-epochs = 50
+epochs = 10
 
 # Get the image data format which Keras follows
 image_data_format = Preprocessing.GetImageDataFormat()
 
 # Get the input data and target data
 input_data = Preprocessing.GetInputData(num_of_cells, num_of_CUEs, num_of_D2Ds, (2000, 8000, 10000), image_data_format)
-target_data = Preprocessing.GetTargetData(num_of_cells, num_of_CUEs, num_of_D2Ds,(2000, 8000, 10000))
+target_data = Preprocessing.GetTargetData(num_of_cells, num_of_CUEs, num_of_D2Ds, (2000, 8000, 10000))
 
 # Reshape the input data
 reshaped_input_data = Preprocessing.ReshapeInputData1D(input_data)
 
 # Split the datadset into the training set and testing set
-(x_train, y_train), (x_test, y_test) = Preprocessing.SplitDataset(reshaped_input_data, target_data, proportion = 0.8, shuffle = True)
+(x_train, y_train), (x_test, y_test) = Preprocessing.SplitDataset(reshaped_input_data, target_data, proportion = 0.8, shuffle = False)
 
 # Get the input shape of input data and the output shape of target data 
 input_shape = Preprocessing.GetInputShape(x_train)
@@ -51,12 +51,12 @@ model.summary()
 adam = optimizers.Adam(lr = 0.001, beta_1 = 0.9, beta_2 = 0.999, amsgrad = False)                 
 model.compile(loss = losses.mean_squared_error, optimizer = adam, metrics = [R2.R2_score])
 
-# Train the model fro a fixed number of epochs (iterations on dataset)
+# Train the model for a fixed number of epochs (iterations on dataset)
 history = model.fit(x_train, y_train, batch_size, epochs, verbose = 1, validation_data = (x_test, y_test))
 
 # Simulation
 channel_gain_matrix = Simulation.GetChannelGainMatrix(x_test, num_of_cells, num_of_CUEs, num_of_D2Ds)
-QoS_of_CUE = Simulation.GetQoSofCUE(channel_gain_matrix, num_of_cells, num_of_CUEs)
+QoS_of_CUE = Simulation.GetQoSofCUE(channel_gain_matrix, num_of_cells, num_of_CUEs, rate_proportion = 0.05)
 
 opt_CUE_power, opt_D2D_power = Simulation.GetPowerAllocation(y_test, num_of_cells, num_of_CUEs, num_of_D2Ds)
 opt_CUE_rate, opt_D2D_rate = Simulation.GetDataRate(channel_gain_matrix, opt_CUE_power, opt_D2D_power)
