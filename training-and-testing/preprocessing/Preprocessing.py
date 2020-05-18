@@ -468,7 +468,7 @@ def Standardization(input_data):
     """
 
     # Insert debugging assertions
-    assert type(input_data) is np.ndarray, "The 'input_data must' be numpy array."
+    assert type(input_data) is np.ndarray, "The 'input_data' must be numpy array."
 
     # Get the mean values and the standard deviation of the input numpy array along the axis  
     Mean = np.mean(input_data, axis = 0)
@@ -479,3 +479,103 @@ def Standardization(input_data):
 
     # Return standardized input data
     return standardized_input_data
+
+def GetMaxLength(target_data_list):
+    """ Return maximum length of the target data in the target data list.
+
+    # Arguments:
+
+    target_data_list: list of numpy arrays
+        List of target data in different parameters setting (e.g., number of cells, number of CUEs, and number of D2Ds),
+        each element in the list corresponds to a target data.
+
+    # Return:
+
+    max_length: int
+        Maximum length of all target data in the target data list.
+    """
+
+    # Insert debugging assertions
+    assert type(target_data_list) is list, "The 'target_data_list' must be list."
+
+    # Initialization of variable
+    max_length = 0
+
+    # Get the maximum length of all target data in the target data list
+    for target_data in target_data_list:
+        if target_data.shape[1] > max_length:
+            max_length = target_data.shape[1]
+
+    # Return maximum length
+    return max_length
+
+def ZeroPadding(target_data, max_length):
+    """ Add zeros to end of a target data to increases its length.
+
+    # Arguments:
+
+    target_data: numpy array
+        The numpy array which is used as the target of the model's output.
+    max_length: int
+        Maximum length of all target data in the target data list.
+
+    # Return:
+
+    padded_target_data: numpy array
+        The padded numpy array which is used as the target of the model's output.
+    """
+
+    # Insert debugging assertions
+    assert type(target_data) is np.ndarray, "The 'target_data' must be numpy array."
+    assert type(max_length) is int, "The 'max_length' must be integer."
+
+    # Add zeros to end of a target data if its length is less than or equal to max length
+    if target_data.shape[1] < max_length:
+        padded_target_data = np.pad(target_data, ((0, 0), (0, max_length - target_data.shape[1])), 'constant')
+    elif target_data.shape[1] == max_length:
+        padded_target_data = target_data
+    else:
+        raise ValueError("The length of 'target_data' along the second axis must be less than or equal to 'max_length'.")
+
+    # Return padded target data
+    return padded_target_data
+
+def RemoveRedundantZero(padded_target_data, num_of_cells, num_of_CUEs, num_of_D2Ds):
+    """ Remove redundant zeros in the end of a padded target data to decreases its length.
+
+    # Arguments:
+
+    padded_target_data: numpy array
+        The padded numpy array which is used as the target of the model's output.
+    num_of_cells: int
+        Number of the cells in the cellular system.
+    num_of_CUEs: int
+        Number of the CUEs in each cell.
+    num_of_D2Ds: int
+        Number of the D2D pairs in each cell.
+
+    # Return:
+
+    target_data: numpy array
+        The numpy array which is used as the target of the model's output.
+    """
+
+    # Insert debugging assertions
+    assert type(padded_target_data) is np.ndarray, "The 'padded_target_data' must be numpy array."
+    assert num_of_cells in Constant.cell_range, f"The 'num_of_cells' must be element in {Constant.cell_range}."
+    assert num_of_CUEs in Constant.CUE_range, f"The 'num_of_CUEs' must be element in {Constant.CUE_range}."
+    assert num_of_D2Ds in Constant.D2D_range, f"The 'num_of_D2Ds' must be element in {Constant.D2D_range}."
+
+    # Initialization of variable
+    output_dims = num_of_cells * num_of_CUEs * (1 + num_of_D2Ds)
+
+    # Remove redundant zeros in the end of a padded target data
+    if padded_target_data.shape[1] > output_dims:
+        target_data = padded_target_data[:, :output_dims]
+    elif padded_target_data.shape[1] == output_dims:
+        target_data = padded_target_data
+    else:
+        raise ValueError("The length of 'padded_target_data' along the second axis must be greater than or equal to output dimensions.")
+
+    # Return target data
+    return target_data
