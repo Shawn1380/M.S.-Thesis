@@ -2,7 +2,7 @@
 Pooling layers module for Python
 ============================
 
-spp is a pooling layers module for keras, and require keras version 2.0 or greater.
+spp is a pooling layers module for keras, and requires keras version 2.0 or greater.
 
 One type of pooling layers are currently available:
     SpatialPyramidPooling: 
