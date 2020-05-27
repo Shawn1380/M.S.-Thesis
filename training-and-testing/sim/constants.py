@@ -1,5 +1,8 @@
 """
-The variables below are constants, whose value cannot be changed, and the value of these constants is determined by the parameters setting of the simulation.
+This module includes a small number of constants.
+
+The following variables are constants and their values cannot be changed.
+The values of these constants are determined according to the simulation parameter settings. 
 
 # Constants:
 
