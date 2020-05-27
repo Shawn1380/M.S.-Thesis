@@ -1,5 +1,7 @@
-import numpy as np
+""" This module implements several functions to handle simulation of device-to-device communication. """
+
 from sim import constants
+import numpy as np
 
 def get_channel_gain_matrix(input_data, num_of_cells, num_of_CUEs, num_of_D2Ds):
     """ Reshape input numpy array into channel gain matrix and return it.

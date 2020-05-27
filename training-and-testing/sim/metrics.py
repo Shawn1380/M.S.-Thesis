@@ -1,5 +1,7 @@
-import numpy as np
+""" This module implements several utility functions to measure regression performance. """
+
 from sim import constants
+import numpy as np
 
 def get_sum_rate(CUE_rate, D2D_rate):
     """ Return system sum rate, CUE sum rate, and D2D sum rate in numpy arrays.
