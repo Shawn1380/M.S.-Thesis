@@ -1,162 +1,12 @@
-from keras import backend as K
-from preprocessing import Constant
-import scipy.io as sio
+""" 
+This module provides several preprocessing functions to change raw feature vectors 
+into a representation that is more suitable for the downstream estimators. 
+"""
+
+from prep import constants
 import numpy as np
-import pathlib
-import sys
 
-def GetImageDataFormat():
-    """ Return default data format convention.
-
-    # Return:
-
-    A string, either 'channels_first' or 'channels_last'.
-    It specifics which data format convention Keras will follow. (keras.backend.image_data_format() returns it)
-    """
-
-    # Return image data format
-    return K.image_data_format()
-
-def GetInputData(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples, image_data_format):
-    """ Return input data (channel gain matrix) in numpy array.
-
-    # Aruguments:
-
-    num_of_cells: int
-        Number of the cells in the cellular system.
-    num_of_CUEs: int
-        Number of the CUEs in each cell.
-    num_of_D2Ds: int
-        Number of the D2D pairs in each cell.
-    num_of_samples: int or tuple
-        Number of the random channel realizations according to the above parameters setting.
-    image_data_format: string
-        Either 'channels_first' or 'channels_last'.
-        It specifics which data format convention Keras will follow. (keras.backend.image_data_format() returns it)
-
-    # Return:
-
-    input_data: 4-D numpy array with shape (batch_size, rows, cols, channels) or (batch_size, channels, rows, cols)
-        Input data in given .mat file. Each element in input_data stands for channel gain matrix, 
-        which is the 3-D numpy array with shape (channels, rows, cols) if data_format is "channels_first",
-        or 3-D numpy array with shape (rows, cols, channels) if data_format is "channels_last".
-    """
-
-    # Insert debugging assertions
-    assert num_of_cells in Constant.cell_range, f"The 'num_of_cells' must be element in {Constant.cell_range}."
-    assert num_of_CUEs in Constant.CUE_range, f"The 'num_of_CUEs' must be element in {Constant.CUE_range}."
-    assert num_of_D2Ds in Constant.D2D_range, f"The 'num_of_D2Ds' must be element in {Constant.D2D_range}."
-
-    # Define inner function
-    def inner(num_of_samples):
-
-        # Initialization of variables
-        batch_size = num_of_samples
-        rows = num_of_cells * (num_of_CUEs + num_of_D2Ds)
-        cols = 1 + num_of_D2Ds
-        channels = num_of_cells
-
-        # Get the filname of the desired .mat file from the directory
-        dataset_dir = pathlib.Path.cwd().joinpath('dataset')
-        cell_dir = '{} cell'.format(num_of_cells)
-        dataset_dir = dataset_dir.joinpath(cell_dir)
-        filename = 'data_Cell_{}_CUE_{}_D2D_{}_{}.mat'.format(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples)
-        mat_fname = dataset_dir.joinpath(filename)
-
-        # Load the .mat file contents
-        mat_content = sio.loadmat(mat_fname)
-        input_data = mat_content['input_data']
-
-        # Flatten the 2-D numpy array to 1-D numpy array
-        input_data = np.ndarray.flatten(input_data)
-
-        # Each element in the flattened 1-D numpy array is a Python list
-        # Convert the numpy array of lists to the numpy array
-        if image_data_format == 'channels_first':
-            input_data = np.vstack(input_data)
-            input_data = np.reshape(input_data, (batch_size, channels, rows, cols))
-        elif image_data_format == 'channels_last':
-            input_data = np.vstack(input_data)
-            input_data = np.reshape(input_data, (batch_size, rows, cols, channels))
-        else:
-            raise ValueError("'image_data_format' must be 'channels_first' or 'channels_last'.")
-
-        # Return input data
-        return input_data
-
-    if type(num_of_samples) is int:    
-        return inner(num_of_samples)
-    elif type(num_of_samples) is tuple:
-        return np.concatenate(list(map(inner, num_of_samples)), axis = 0) 
-    else:
-        raise TypeError("'num_of_samples' must be integer or tuple.")
-
-def GetTargetData(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples):
-    """ Return target data (power allocation vector) in numpy array.
-
-    # Arguments:
-
-    num_of_cells: int
-        Number of the cells in the cellular system.
-    num_of_CUEs: int
-        Number of the CUEs in each cell.
-    num_of_D2Ds: int
-        Number of the D2D pairs in each cell.
-    num_of_samples: int or tuple
-        Number of the random channel realizations according to the above parameters setting.
-
-    # Return:
-
-    target_data: 2-D numpy array with shape (batch_size, CUE_output_dim + D2D_output_dim)
-        Target data in given .mat file. Each element in target_data stands for the power allocation vector, 
-        which is the 1-D numpy array with shape (CUE_output_dim + D2D_output_dim, ).
-    """
-
-    # Insert debugging assertions
-    assert num_of_cells in Constant.cell_range, f"The 'num_of_cells' must be element in {Constant.cell_range}."
-    assert num_of_CUEs in Constant.CUE_range, f"The 'num_of_CUEs' must be element in {Constant.CUE_range}."
-    assert num_of_D2Ds in Constant.D2D_range, f"The 'num_of_D2Ds' must be element in {Constant.D2D_range}."
-
-    # Define inner function
-    def inner(num_of_samples):
-        
-        # Initialization of variables
-        batch_size = num_of_samples
-        CUE_output_dim = num_of_CUEs * num_of_cells
-        D2D_output_dim = num_of_D2Ds * num_of_CUEs * num_of_cells
-
-        # Get the filname of the desired .mat file from the directory  
-        dataset_dir = pathlib.Path.cwd().joinpath('dataset')
-        cell_dir = '{} cell'.format(num_of_cells)
-        dataset_dir = dataset_dir.joinpath(cell_dir)
-        filename = 'data_Cell_{}_CUE_{}_D2D_{}_{}.mat'.format(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples)
-        mat_fname = dataset_dir.joinpath(filename)
-
-        # Load the .mat file contents
-        mat_content = sio.loadmat(mat_fname)
-        target_data = mat_content['target_data']
-        optimal_CUE_power = target_data[0]
-        optimal_D2D_power = target_data[1]
-
-        # Each element in the numpy array is a Python list
-        # Convert the numpy array of lists to the numpy array
-        optimal_CUE_power = np.vstack(optimal_CUE_power)
-        optimal_CUE_power = np.reshape(optimal_CUE_power, (batch_size, CUE_output_dim))
-        optimal_D2D_power = np.vstack(optimal_D2D_power)
-        optimal_D2D_power = np.reshape(optimal_D2D_power, (batch_size, D2D_output_dim))
-
-        # Return target data
-        target_data = np.hstack((optimal_CUE_power, optimal_D2D_power))
-        return target_data
-
-    if type(num_of_samples) is int:
-        return inner(num_of_samples)
-    elif type(num_of_samples) is tuple:
-        return np.concatenate(list(map(inner, num_of_samples)), axis = 0) 
-    else:
-        raise TypeError("'num_of_samples' must be integer or tuple.")
-
-def SplitDataset(input_data, target_data, normalized_input_data = None, proportion = Constant.data_proportion, shuffle = True):
+def split_dataset(input_data, target_data, normalized_input_data = None, proportion = constants.data_proportion, shuffle = True):
     """ Return training set and testing set in tuple.
 
     # Arguments:
@@ -176,7 +26,7 @@ def SplitDataset(input_data, target_data, normalized_input_data = None, proporti
 
     Tuple of Numpy arrays: (x_train, y_train, z_train), (x_test, y_test, z_test) if 'normalized_input_data' is not None
         x_train and x_test are numpy arrays used for training, 
-        y_train and y_test are numpy arrays used for testing.
+        y_train and y_test are numpy arrays used for testing,
         z_train and z_test are numpy arrays used for simulation.
 
     Tuple of Numpy arrays: (x_train, y_train), (x_test, y_test) if 'normalized_input_data' is None
@@ -244,7 +94,7 @@ def SplitDataset(input_data, target_data, normalized_input_data = None, proporti
         # Return traning set and testing set 
         return (x_train, y_train), (x_test, y_test)
 
-def GetInputShape(input_data):
+def get_input_shape(input_data):
     """ Return input shape (does not include the batch axis) of the given input numpy array.
 
     # Argument:
@@ -269,7 +119,7 @@ def GetInputShape(input_data):
     # Return input shape
     return input_shape
 
-def GetTargetShape(target_data):
+def get_target_shape(target_data):
     """ Return target shape (does not include the batch axis) of the given target numpy array.
 
     # Argument:
@@ -292,7 +142,7 @@ def GetTargetShape(target_data):
     # Return target shape
     return target_shape
 
-def ReshapeInputData3D(input_data, image_data_format, rows, cols, channels):
+def reshape_input_data_3D(input_data, image_data_format, rows, cols, channels):
     """ Gives a new shape (3D) to input numpy array without changing its data.
 
     # Arguments:
@@ -336,7 +186,7 @@ def ReshapeInputData3D(input_data, image_data_format, rows, cols, channels):
     # Return reshaped input data
     return reshaped_input_data
 
-def ReshapeInputData2D(input_data, steps, channels):
+def reshape_input_data_2D(input_data, steps, channels):
     """ Gives a new shape (2D) to input numpy array without changing its data.
 
     # Arguments:
@@ -368,7 +218,7 @@ def ReshapeInputData2D(input_data, steps, channels):
     # Return reshaped input data
     return reshaped_input_data
 
-def ReshapeInputData1D(input_data):
+def reshape_input_data_1D(input_data):
     """ Gives a new shape (1D) to input numpy array without changing its data.
 
     # Arguments:
@@ -399,88 +249,7 @@ def ReshapeInputData1D(input_data):
     # Return reshaped input data
     return reshaped_input_data
 
-def SimpleScaling(input_data):
-    """ Scale the values of the input numpy array to the range [0, 1] by simple scaling.
-
-    # Arguments:
-
-    input_data: numpy array
-        The numpy array which is used as the input of the model. 
-
-    # Return:
-
-    scaled_input_data: numpy array
-        Scaled input data. Each feature is normalized individually such that it is in the range [0, 1].  
-    """
-
-    # Insert debugging assertions
-    assert type(input_data) is np.ndarray, "The 'input_data' must be numpy array."
-
-    # Get the minimum values of the input numpy array along the axis  
-    Max = np.max(input_data, axis = 0)
-
-    # Simple sclaing 
-    scaled_input_data = input_data / (Max + sys.float_info.min)
-
-    # Return scaled input data
-    return scaled_input_data
-
-def MinMaxNormalization(input_data):
-    """ Scale the values of the input numpy array to the range [0, 1] by min-max normalization.
-
-    # Arguments:
-
-    input_data: numpy array
-        The numpy array which is used as the input of the model. 
-
-    # Return:
-
-    normalized_input_data: numpy array
-        Normalized input data. Each feature is normalized individually such that it is in the range [0, 1].  
-    """
-
-    # Insert debugging assertions
-    assert type(input_data) is np.ndarray, "The 'input_data' must be numpy array."
-
-    # Get the minimum and maximun values of the input numpy array along the axis  
-    Max = np.max(input_data, axis = 0)
-    Min = np.min(input_data, axis = 0)
-
-    # Min-max normalization 
-    normalized_input_data = (input_data - Min) / (Max - Min + sys.float_info.min)
-
-    # Return normalized input data
-    return normalized_input_data
-
-def Standardization(input_data):
-    """ Subtract the mean value and divide by standard deviation from the values of the input numpy array.
-
-    # Arguments:
-
-    input_data: numpy array
-        The numpy array which is used as the input of the model.  
-
-    # Return:
-
-    standardized_input_data: numpy array
-        Standardized input data. Each feature is standardized individually such that
-        it follows the Gaussian distribution with zero mean and unit variance.
-    """
-
-    # Insert debugging assertions
-    assert type(input_data) is np.ndarray, "The 'input_data' must be numpy array."
-
-    # Get the mean values and the standard deviation of the input numpy array along the axis  
-    Mean = np.mean(input_data, axis = 0)
-    Std = np.std(input_data, axis = 0)
-
-    # Standardization 
-    standardized_input_data = (input_data - Mean) / (Std + sys.float_info.min)
-
-    # Return standardized input data
-    return standardized_input_data
-
-def GetMaxLength(target_data_list):
+def get_max_length(target_data_list):
     """ Return maximum length of the target data in the target data list.
 
     # Arguments:
@@ -509,7 +278,7 @@ def GetMaxLength(target_data_list):
     # Return maximum length
     return max_length
 
-def ZeroPadding(target_data, max_length):
+def zero_padding(target_data, max_length):
     """ Add zeros to end of a target data to increases its length.
 
     # Arguments:
@@ -540,7 +309,7 @@ def ZeroPadding(target_data, max_length):
     # Return padded target data
     return padded_target_data
 
-def RemoveRedundantZero(padded_target_data, num_of_cells, num_of_CUEs, num_of_D2Ds):
+def remove_redundant_zeros(padded_target_data, num_of_cells, num_of_CUEs, num_of_D2Ds):
     """ Remove redundant zeros in the end of a padded target data to decreases its length.
 
     # Arguments:
@@ -562,9 +331,9 @@ def RemoveRedundantZero(padded_target_data, num_of_cells, num_of_CUEs, num_of_D2
 
     # Insert debugging assertions
     assert type(padded_target_data) is np.ndarray, "The 'padded_target_data' must be numpy array."
-    assert num_of_cells in Constant.cell_range, f"The 'num_of_cells' must be element in {Constant.cell_range}."
-    assert num_of_CUEs in Constant.CUE_range, f"The 'num_of_CUEs' must be element in {Constant.CUE_range}."
-    assert num_of_D2Ds in Constant.D2D_range, f"The 'num_of_D2Ds' must be element in {Constant.D2D_range}."
+    assert num_of_cells in constants.cell_range, f"The 'num_of_cells' must be element in {constants.cell_range}."
+    assert num_of_CUEs in constants.CUE_range, f"The 'num_of_CUEs' must be element in {constants.CUE_range}."
+    assert num_of_D2Ds in constants.D2D_range, f"The 'num_of_D2Ds' must be element in {constants.D2D_range}."
 
     # Initialization of variable
     output_dims = num_of_cells * num_of_CUEs * (1 + num_of_D2Ds)
