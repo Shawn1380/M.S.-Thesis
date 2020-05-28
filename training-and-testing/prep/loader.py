@@ -1,6 +1,7 @@
-""" This module includes functions to load and fetch our in-house datasets. """
+""" This module includes functions to load and fetch our in-house datasets and pre-trained models. """
 
 from keras import backend as K
+from keras import models
 from prep import constants
 import scipy.io as sio
 import numpy as np
@@ -11,12 +12,12 @@ def get_image_data_format():
 
     # Aruguments:
 
-    None
+        None
 
     # Return:
 
-    A string, either 'channels_first' or 'channels_last'.
-    It specifics which data format convention Keras will follow. (keras.backend.image_data_format() returns it)
+        A string, either 'channels_first' or 'channels_last'.
+        It specifics which data format convention Keras will follow. (keras.backend.image_data_format() returns it)
     """
 
     # Return image data format
@@ -27,24 +28,24 @@ def load_input_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples, imag
 
     # Aruguments:
 
-    num_of_cells: int
-        Number of the cells in the cellular system.
-    num_of_CUEs: int
-        Number of the CUEs in each cell.
-    num_of_D2Ds: int
-        Number of the D2D pairs in each cell.
-    num_of_samples: int or tuple
-        Number of the random channel realizations according to the above parameters setting.
-    image_data_format: string
-        Either 'channels_first' or 'channels_last'.
-        It specifics which data format convention Keras will follow. (keras.backend.image_data_format() returns it)
+        num_of_cells: int
+            Number of the cells in the cellular system.
+        num_of_CUEs: int
+            Number of the CUEs in each cell.
+        num_of_D2Ds: int
+            Number of the D2D pairs in each cell.
+        num_of_samples: int or tuple
+            Number of the random channel realizations according to the above parameters setting.
+        image_data_format: string
+            Either 'channels_first' or 'channels_last'.
+            It specifics which data format convention Keras will follow. (keras.backend.image_data_format() returns it)
 
     # Return:
 
-    input_data: 4-D numpy array with shape (batch_size, rows, cols, channels) or (batch_size, channels, rows, cols)
-        Input data in given .mat file. Each element in input_data stands for channel gain matrix, 
-        which is the 3-D numpy array with shape (channels, rows, cols) if data_format is "channels_first",
-        or 3-D numpy array with shape (rows, cols, channels) if data_format is "channels_last".
+        input_data: 4-D numpy array with shape (batch_size, rows, cols, channels) or (batch_size, channels, rows, cols)
+            Input data in given .mat file. Each element in input_data stands for channel gain matrix, 
+            which is the 3-D numpy array with shape (channels, rows, cols) if data_format is "channels_first",
+            or 3-D numpy array with shape (rows, cols, channels) if data_format is "channels_last".
     """
 
     # Insert debugging assertions
@@ -61,12 +62,12 @@ def load_input_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples, imag
         cols = 1 + num_of_D2Ds
         channels = num_of_cells
 
-        # Get the filname of the desired .mat file from the directory
+        # Get the file name of the desired .mat file from the directory
         dataset_dir = pathlib.Path.cwd().joinpath('dataset')
         cell_dir = '{} cell'.format(num_of_cells)
         dataset_dir = dataset_dir.joinpath(cell_dir)
-        filename = 'data_Cell_{}_CUE_{}_D2D_{}_{}.mat'.format(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples)
-        mat_fname = dataset_dir.joinpath(filename)
+        file_name = 'data_Cell_{}_CUE_{}_D2D_{}_{}.mat'.format(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples)
+        mat_fname = dataset_dir.joinpath(file_name)
 
         # Load the .mat file contents
         mat_content = sio.loadmat(mat_fname)
@@ -84,7 +85,7 @@ def load_input_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples, imag
             input_data = np.vstack(input_data)
             input_data = np.reshape(input_data, (batch_size, rows, cols, channels))
         else:
-            raise ValueError("'image_data_format' must be 'channels_first' or 'channels_last'.")
+            raise ValueError("The 'image_data_format' must be 'channels_first' or 'channels_last'.")
 
         # Return input data
         return input_data
@@ -96,27 +97,27 @@ def load_input_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples, imag
         return np.concatenate(list(map(inner, num_of_samples)), axis = 0) 
 
     else:
-        raise TypeError("'num_of_samples' must be integer or tuple.")
+        raise TypeError("The 'num_of_samples' must be integer or tuple.")
 
 def load_target_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples):
     """ Return target data (power allocation vector) in numpy array.
 
     # Arguments:
 
-    num_of_cells: int
-        Number of the cells in the cellular system.
-    num_of_CUEs: int
-        Number of the CUEs in each cell.
-    num_of_D2Ds: int
-        Number of the D2D pairs in each cell.
-    num_of_samples: int or tuple
-        Number of the random channel realizations according to the above parameters setting.
+        num_of_cells: int
+            Number of the cells in the cellular system.
+        num_of_CUEs: int
+            Number of the CUEs in each cell.
+        num_of_D2Ds: int
+            Number of the D2D pairs in each cell.
+        num_of_samples: int or tuple
+            Number of the random channel realizations according to the above parameters setting.
 
     # Return:
 
-    target_data: 2-D numpy array with shape (batch_size, CUE_output_dim + D2D_output_dim)
-        Target data in given .mat file. Each element in target_data stands for the power allocation vector, 
-        which is the 1-D numpy array with shape (CUE_output_dim + D2D_output_dim, ).
+        target_data: 2-D numpy array with shape (batch_size, CUE_output_dim + D2D_output_dim)
+            Target data in given .mat file. Each element in target_data stands for the power allocation vector, 
+            which is the 1-D numpy array with shape (CUE_output_dim + D2D_output_dim, ).
     """
 
     # Insert debugging assertions
@@ -132,12 +133,12 @@ def load_target_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples):
         CUE_output_dim = num_of_CUEs * num_of_cells
         D2D_output_dim = num_of_D2Ds * num_of_CUEs * num_of_cells
 
-        # Get the filname of the desired .mat file from the directory  
+        # Get the file name of the desired .mat file from the directory  
         dataset_dir = pathlib.Path.cwd().joinpath('dataset')
         cell_dir = '{} cell'.format(num_of_cells)
         dataset_dir = dataset_dir.joinpath(cell_dir)
-        filename = 'data_Cell_{}_CUE_{}_D2D_{}_{}.mat'.format(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples)
-        mat_fname = dataset_dir.joinpath(filename)
+        file_name = 'data_Cell_{}_CUE_{}_D2D_{}_{}.mat'.format(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples)
+        mat_fname = dataset_dir.joinpath(file_name)
 
         # Load the .mat file contents
         mat_content = sio.loadmat(mat_fname)
@@ -163,4 +164,109 @@ def load_target_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples):
         return np.concatenate(list(map(inner, num_of_samples)), axis = 0) 
 
     else:
-        raise TypeError("'num_of_samples' must be integer or tuple.")
+        raise TypeError("The 'num_of_samples' must be integer or tuple.")
+
+def load_model(NN_type, num_of_cells, num_of_CUEs, num_of_D2Ds = None):
+    """ Whole-model loading (configuration and weights).
+
+    Whole-model loading means reading a file that contains:
+        1. The architecture of the model, allowing to re-create the model.
+        2. The weights of the model.
+        3. The training configuration (loss, optimizer).
+        4. The state of the optimizer, allowing to resume training exactly where you left off.
+
+    # Aruguments:
+
+        NN_type: string
+            Type of neural network.
+        num_of_cells: int
+            Number of the cells in the cellular system.
+        num_of_CUEs: int
+            Number of the CUEs in each cell.
+        num_of_D2Ds: int, optional
+            Number of the D2D pairs in each cell.
+
+    # Return:
+
+        model: keras.engine.sequential.Sequential
+            A keras model instance, which is saved in HDF5 format.
+    """
+
+    # Insert debugging assertions
+    assert type(NN_type) is str, "The 'NN_type' must be string."
+    assert num_of_cells in constants.cell_range, f"The 'num_of_cells' must be element in {constants.cell_range}."
+    assert num_of_CUEs in constants.CUE_range, f"The 'num_of_CUEs' must be element in {constants.CUE_range}."
+    assert num_of_D2Ds in constants.D2D_range or num_of_D2Ds is None, f"The 'num_of_D2Ds' must be element in {constants.D2D_range}."
+
+    # Get the path to the saved file 
+    model_dir = pathlib.Path.cwd().joinpath('model')
+    cell_dir = '{} cell'.format(num_of_cells)
+    model_dir = model_dir.joinpath(cell_dir)
+
+    if num_of_D2Ds:
+        file_name = 'model_Cell_{}_CUE_{}_D2D_{}_{}'.format(num_of_cells, num_of_CUEs, num_of_D2Ds, NN_type)
+    else:
+        file_name = 'model_Cell_{}_CUE_{}_{}'.format(num_of_cells, num_of_CUEs, NN_type)
+
+    file_path = model_dir.joinpath(file_name)
+
+    # Load the compiled model
+    model = models.load_model(file_path, custom_objects = None, compile = True)
+
+    # Return model
+    return model
+
+def load_weights(NN_type, num_of_cells, num_of_CUEs, num_of_D2Ds = None):
+    """ Weights-only loading.
+
+    Weights-only loading means reading a file that contains the weights of the model.
+
+    # Aruguments:
+
+        NN_type: string
+            Type of neural network.
+        num_of_cells: int
+            Number of the cells in the cellular system.
+        num_of_CUEs: int
+            Number of the CUEs in each cell.
+        num_of_D2Ds: int, optional
+            Number of the D2D pairs in each cell.
+
+    # Return:
+
+        None
+    """
+
+    # Insert debugging assertions
+    assert type(NN_type) is str, "The 'NN_type' must be string."
+    assert num_of_cells in constants.cell_range, f"The 'num_of_cells' must be element in {constants.cell_range}."
+    assert num_of_CUEs in constants.CUE_range, f"The 'num_of_CUEs' must be element in {constants.CUE_range}."
+    assert num_of_D2Ds in constants.D2D_range or num_of_D2Ds is None, f"The 'num_of_D2Ds' must be element in {constants.D2D_range}."
+
+def load_configuration(NN_type, num_of_cells, num_of_CUEs, num_of_D2Ds = None):
+    """ Configuration-only loading.
+
+    Weights-only loading means reading a file that contains the architecture of the model,
+    and not its weights or its training configuration.
+
+    # Aruguments:
+
+        NN_type: string
+            Type of neural network.
+        num_of_cells: int
+            Number of the cells in the cellular system.
+        num_of_CUEs: int
+            Number of the CUEs in each cell.
+        num_of_D2Ds: int, optional
+            Number of the D2D pairs in each cell.
+
+    # Return:
+
+        None
+    """
+
+    # Insert debugging assertions
+    assert type(NN_type) is str, "The 'NN_type' must be string."
+    assert num_of_cells in constants.cell_range, f"The 'num_of_cells' must be element in {constants.cell_range}."
+    assert num_of_CUEs in constants.CUE_range, f"The 'num_of_CUEs' must be element in {constants.CUE_range}."
+    assert num_of_D2Ds in constants.D2D_range or num_of_D2Ds is None, f"The 'num_of_D2Ds' must be element in {constants.D2D_range}."

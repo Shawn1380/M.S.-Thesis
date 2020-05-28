@@ -8,23 +8,23 @@ def get_channel_gain_matrix(input_data, num_of_cells, num_of_CUEs, num_of_D2Ds):
 
     # Aruguments:
 
-    input_data: numpy array 
-        The numpy array which is passed into the input layer of the model.
-        The computation of prediction is done in batches, so the firxt axis stands for batch size.
-    num_of_cells: int
-        Number of the cells in the cellular system.
-    num_of_CUEs: int
-        Number of the CUEs in each cell.
-    num_of_D2Ds: int
-        Number of the D2D pairs in each cell.
+        input_data: numpy array 
+            The numpy array which is passed into the input layer of the model.
+            The computation of prediction is done in batches, so the firxt axis stands for batch size.
+        num_of_cells: int
+            Number of the cells in the cellular system.
+        num_of_CUEs: int
+            Number of the CUEs in each cell.
+        num_of_D2Ds: int
+            Number of the D2D pairs in each cell.
 
     # Return:
 
-    channel_gain_matrix: numpy array with shape (batch_size, rows, cols, channels)
-        A matrix which stands for channel gains of all links in the entire network.
-        rows: num_of_cells * (num_of_CUEs + num_of_D2Ds).
-        cols: 1 + num_of_D2Ds.
-        channels: num_of_cells.
+        channel_gain_matrix: numpy array with shape (batch_size, rows, cols, channels)
+            A matrix which stands for channel gains of all links in the entire network.
+            rows: num_of_cells * (num_of_CUEs + num_of_D2Ds).
+            cols: 1 + num_of_D2Ds.
+            channels: num_of_cells.
     """
 
     # Insert debugging assertions
@@ -50,21 +50,21 @@ def get_power_allocation(output_data, num_of_cells, num_of_CUEs, num_of_D2Ds):
 
     # Aruguments:
 
-    output_data: numpy array
-        Target data or prediction which is obtained from the output layer of the model.
-        The computation of prediction is done in batches, so the firxt axis stands for batch size.
-    num_of_cells: int
-        Number of the cells in the cellular system.
-    num_of_CUEs: int
-        Number of the CUEs in each cell.
-    num_of_D2Ds: int
-        Number of the D2D pairs in each cell.
+        output_data: numpy array
+            Target data or prediction which is obtained from the output layer of the model.
+            The computation of prediction is done in batches, so the firxt axis stands for batch size.
+        num_of_cells: int
+            Number of the cells in the cellular system.
+        num_of_CUEs: int
+            Number of the CUEs in each cell.
+        num_of_D2Ds: int
+            Number of the D2D pairs in each cell.
 
     # Return:
 
-    Tuple of numpy arrays: (CUE_power, D2D_power)
-        CUE_power: The numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells), which stands for power allocation of all CUEs.
-        D2D_power: The numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells), which stands for power allocation of all D2D pairs.
+        Tuple of numpy arrays: (CUE_power, D2D_power)
+            CUE_power: The numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells), which stands for power allocation of all CUEs.
+            D2D_power: The numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells), which stands for power allocation of all D2D pairs.
     """
 
     # Insert debugging assertions
@@ -95,21 +95,21 @@ def get_data_rate(channel_gain_matrix, CUE_power, D2D_power):
 
     # Arguments:
 
-    channel_gain_matrix: numpy array with shape (batch_size, rows, cols, channels)
-        A matrix which stands for channel gains of all links in the entire network.
-        rows: num_of_cells * (num_of_CUEs + num_of_D2Ds).
-        cols: 1 + num_of_D2Ds.
-        channels: num_of_cells.
-    CUE_power: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The transmit power of all CUEs.
-    D2D_power: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
-        The transmit power of all D2D pairs.
+        channel_gain_matrix: numpy array with shape (batch_size, rows, cols, channels)
+            A matrix which stands for channel gains of all links in the entire network.
+            rows: num_of_cells * (num_of_CUEs + num_of_D2Ds).
+            cols: 1 + num_of_D2Ds.
+            channels: num_of_cells.
+        CUE_power: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The transmit power of all CUEs.
+        D2D_power: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
+            The transmit power of all D2D pairs.
 
     # Return:
     
-    Tuple of numpy arrays: (CUE_rate, D2D_rate)
-        CUE_rate: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells), which stands for data rate of all CUEs.
-        D2D_rate: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells), which stands for data rate of all D2D pairs.
+        Tuple of numpy arrays: (CUE_rate, D2D_rate)
+            CUE_rate: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells), which stands for data rate of all CUEs.
+            D2D_rate: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells), which stands for data rate of all D2D pairs.
     """
 
     # Insert debugging assertions
@@ -222,20 +222,22 @@ def get_QoS_of_CUE(channel_gain_matrix, num_of_cells, num_of_CUEs, rate_proporti
 
     # Arguments:
 
-    channel_gain_matrix: numpy array with shape (batch_size, rows, cols, channels)
-        A matrix which stands for channel gains of all links in the entire network.
-        rows: num_of_cells * (num_of_CUEs + num_of_D2Ds).
-        cols: 1 + num_of_D2Ds.
-        channels: num_of_cells.
-    num_of_cells: int
-        Number of the cells in the cellular system.
-    num_of_CUEs: int
-        Number of the CUEs in each cell.
+        channel_gain_matrix: numpy array with shape (batch_size, rows, cols, channels)
+            A matrix which stands for channel gains of all links in the entire network.
+            rows: num_of_cells * (num_of_CUEs + num_of_D2Ds).
+            cols: 1 + num_of_D2Ds.
+            channels: num_of_cells.
+        num_of_cells: int
+            Number of the cells in the cellular system.
+        num_of_CUEs: int
+            Number of the CUEs in each cell.
+        rate_proportion: float, optional
+            The ratio of CUE's minimum rate requirement to CUE's maximum data rate.
 
     # Return:
 
-    QoS_of_CUE: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The minimum rate requirement of all CUEs (bps/Hz).
+        QoS_of_CUE: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The minimum rate requirement of all CUEs (bps/Hz).
     """
 
     # Insert debugging assertions
@@ -283,20 +285,20 @@ def print_data_rate(CUE_rate, D2D_rate, QoS_of_CUE, header, realization_index):
 
     # Arguments:
 
-    CUE_rate: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The data rate of all CUEs.
-    D2D_rate: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
-        The data rate of all D2D pair.
-    QoS_of_CUE: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The minimum rate requirement of all CUEs (bps/Hz).
-    header: string
-        Determine what kind of string should be printed.
-    realization_index: int
-        Determine which realization should be considered.
+        CUE_rate: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The data rate of all CUEs.
+        D2D_rate: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
+            The data rate of all D2D pair.
+        QoS_of_CUE: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The minimum rate requirement of all CUEs (bps/Hz).
+        header: string
+            Determine what kind of string should be printed.
+        realization_index: int
+            Determine which realization should be considered.
 
     # Return:
 
-    None
+        None
     """
     
     # Insert debugging assertions
@@ -348,18 +350,18 @@ def print_power_consumption(CUE_power, D2D_power, header, realization_index):
 
     # Arguments:
 
-    CUE_power: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The transmit power of all CUEs.
-    D2D_power: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
-        The transmit power of all D2D pairs.
-    header: string
-        Determine what kind of string should be printed.
-    realization_index: int
-        Determine which realization should be considered.
+        CUE_power: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The transmit power of all CUEs.
+        D2D_power: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
+            The transmit power of all D2D pairs.
+        header: string
+            Determine what kind of string should be printed.
+        realization_index: int
+            Determine which realization should be considered.
 
     # Return:
 
-    None
+        None
     """
 
     # Insert debugging assertions
@@ -410,22 +412,22 @@ def feasibility_check(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE, real
 
     # Arguments:
 
-    CUE_rate: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The data rate of all CUEs.
-    D2D_rate: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
-        The data rate of all D2D pairs.
-    CUE_power: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The transmit power of all CUEs.
-    D2D_power: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
-        The transmit power of all D2D pairs.
-    QoS_of_CUE: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The minimum rate requirement of all CUEs (bps/Hz).
-    realization_index: int
-        Determine which realization should be considered.
+        CUE_rate: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The data rate of all CUEs.
+        D2D_rate: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
+            The data rate of all D2D pairs.
+        CUE_power: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The transmit power of all CUEs.
+        D2D_power: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
+            The transmit power of all D2D pairs.
+        QoS_of_CUE: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The minimum rate requirement of all CUEs (bps/Hz).
+        realization_index: int
+            Determine which realization should be considered.
 
     # Return: 
      
-    None
+        None
     """
 
     # Insert debugging assertions

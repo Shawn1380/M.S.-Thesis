@@ -11,34 +11,34 @@ def split_dataset(input_data, target_data, normalized_input_data = None, proport
 
     # Arguments:
 
-    input_data: numpy array
-        The numpy array which is used as the input of the model. 
-    target_data: numpy array
-        The numpy array which is used as the target of the model's output.
-    normalized_input_data: numpy array, optional
-        The numpy array which is normalized input data.
-    proportion: float, optional
-        Float between 0 and 1. Fraction of the data to be used as training data.
-    shuffle: boolean, optional
-        whether to shuffle the training data before splitting.
+        input_data: numpy array
+            The numpy array which is used as the input of the model. 
+        target_data: numpy array
+            The numpy array which is used as the target of the model's output.
+        normalized_input_data: numpy array, optional
+            The numpy array which is normalized input data.
+        proportion: float, optional
+            Float between 0 and 1. Fraction of the data to be used as training data.
+        shuffle: boolean, optional
+            Whether to shuffle the training data before splitting.
 
     # Return:
 
-    Tuple of Numpy arrays: (x_train, y_train, z_train), (x_test, y_test, z_test) if 'normalized_input_data' is not None
-        x_train and x_test are numpy arrays used for training, 
-        y_train and y_test are numpy arrays used for testing,
-        z_train and z_test are numpy arrays used for simulation.
+        Tuple of Numpy arrays: (x_train, y_train, z_train), (x_test, y_test, z_test) if 'normalized_input_data' is not None
+            x_train and x_test are numpy arrays used for training, 
+            y_train and y_test are numpy arrays used for testing,
+            z_train and z_test are numpy arrays used for simulation.
 
-    Tuple of Numpy arrays: (x_train, y_train), (x_test, y_test) if 'normalized_input_data' is None
-        x_train and x_test are numpy arrays used for training, 
-        y_train and y_test are numpy arrays used for testing.
+        Tuple of Numpy arrays: (x_train, y_train), (x_test, y_test) if 'normalized_input_data' is None
+            x_train and x_test are numpy arrays used for training, 
+            y_train and y_test are numpy arrays used for testing.
     """
 
     # Insert debugging assertions
     assert type(input_data) is np.ndarray, "The 'input_data' must be numpy array."
     assert type(target_data) is np.ndarray, "The 'target_data' must be numpy array."
     assert type(normalized_input_data) is np.ndarray or normalized_input_data is None, "The 'normalized_input_data' must be numpy array or None."
-    assert len(input_data) == len(target_data), "The 'input_data' and 'target_data' must have same size in the first axis (batch size)."
+    assert len(input_data) == len(target_data), "The 'input_data' and the 'target_data' must have same size along the first axis (batch size)."
     assert 0 <= proportion <= 1, "The 'proportion' must be float between 0 and 1."
     assert type(shuffle) is bool, "The 'shuffle' must be boolean."
 
@@ -99,15 +99,15 @@ def get_input_shape(input_data):
 
     # Argument:
 
-    input_data: numpy array
-        The numpy array which is used as the input of the model. 
+        input_data: numpy array
+            The numpy array which is used as the input of the model. 
 
     # Return:
 
-    input_shape: tuple
-         tuple of interger, does not include the batch axis.
-         e.g. input_shape = (3, 128, 128) for 128 x 128 RGB image if data_format = 'channels_first', 
-         or (128, 128, 3) for 128 x 128 RGB image if data_format = 'channels_last'.
+        input_shape: tuple
+            Tuple of interger, does not include the batch axis.
+            e.g. input_shape = (3, 128, 128) for 128 x 128 RGB image if data_format = 'channels_first', 
+            or (128, 128, 3) for 128 x 128 RGB image if data_format = 'channels_last'.
     """
 
     # Insert debugging assertions
@@ -124,13 +124,13 @@ def get_target_shape(target_data):
 
     # Argument:
 
-    target_data: numpy array
-        The numpy array which is used as the target of the model's output. 
+        target_data: numpy array
+            The numpy array which is used as the target of the model's output. 
 
     # Return:
 
-    target_shape: int
-         dimensionality of the output space.
+        target_shape: int
+            Dimensionality of the output space.
     """
 
     # Insert debugging assertions
@@ -147,22 +147,22 @@ def reshape_input_data_3D(input_data, image_data_format, rows, cols, channels):
 
     # Arguments:
 
-    input_data: numpy array
-        The numpy array which is used as the input of the model.
-    image_data_format: string
-        Either 'channels_first' or 'channels_last'.
-        It specifics which data format convention Keras will follow. (keras.backend.image_data_format() returns it)
-    rows: int
-        The first dimension of the new shape (does not include the batch axis).
-    cols: int
-        The second dimension of the new shape (does not include the batch axis).
-    channels: int
-        The third dimension of the new shape (does not include the batch axis).
+        input_data: numpy array
+            The numpy array which is used as the input of the model.
+        image_data_format: string
+            Either 'channels_first' or 'channels_last'.
+            It specifics which data format convention Keras will follow. (keras.backend.image_data_format() returns it)
+        rows: int
+            The first dimension of the new shape (does not include the batch axis).
+        cols: int
+            The second dimension of the new shape (does not include the batch axis).
+        channels: int
+            The third dimension of the new shape (does not include the batch axis).
 
     # Return 
 
-    reshaped_input_data: numpy array
-        This will be a new view object if possible; otherwise, the ValueError will be raised.
+        reshaped_input_data: numpy array
+            This will be a new view object if possible; otherwise, the ValueError will be raised.
     """
 
     # Insert debugging assertions
@@ -181,7 +181,7 @@ def reshape_input_data_3D(input_data, image_data_format, rows, cols, channels):
     elif image_data_format == 'channels_last':
         reshaped_input_data = np.reshape(input_data, (batch_size, rows, cols, channels))
     else:
-        raise ValueError("'image_data_format' must be 'channels_first' or 'channels_last'.") 
+        raise ValueError("The 'image_data_format' must be 'channels_first' or 'channels_last'.") 
 
     # Return reshaped input data
     return reshaped_input_data
@@ -191,17 +191,17 @@ def reshape_input_data_2D(input_data, steps, channels):
 
     # Arguments:
 
-    input_data: numpy array
-        The numpy array which is used as the input of the model.
-    steps: int
-        The first dimension of the new shape (does not include the batch axis).
-    channels: int
-        The second dimension of the new shape (does not include the batch axis).
+        input_data: numpy array
+            The numpy array which is used as the input of the model.
+        steps: int
+            The first dimension of the new shape (does not include the batch axis).
+        channels: int
+            The second dimension of the new shape (does not include the batch axis).
 
     # Return 
 
-    reshaped_input_data: numpy array
-        This will be a new view object if possible; otherwise, the ValueError will be raised.
+        reshaped_input_data: numpy array
+            This will be a new view object if possible; otherwise, the ValueError will be raised.
     """
 
     # Insert debugging assertions
@@ -223,13 +223,13 @@ def reshape_input_data_1D(input_data):
 
     # Arguments:
 
-    input_data: numpy array
-        The numpy array which is used as the input of the model.
+        input_data: numpy array
+            The numpy array which is used as the input of the model.
     
     # Return 
 
-    reshaped_input_data: numpy array
-        This will be a new view object if possible; otherwise, the ValueError will be raised.
+        reshaped_input_data: numpy array
+            This will be a new view object if possible; otherwise, the ValueError will be raised.
     """
 
     # Insert debugging assertions
@@ -254,14 +254,14 @@ def get_max_length(target_data_list):
 
     # Arguments:
 
-    target_data_list: list of numpy arrays
-        List of target data in different parameters setting (e.g., number of cells, number of CUEs, and number of D2Ds),
-        each element in the list corresponds to a target data.
+        target_data_list: list of numpy arrays
+            List of target data in different parameters setting (e.g., number of cells, number of CUEs, and number of D2Ds),
+            each element in the list corresponds to a target data.
 
     # Return:
 
-    max_length: int
-        Maximum length of all target data in the target data list.
+        max_length: int
+            Maximum length of all target data in the target data list.
     """
 
     # Insert debugging assertions
@@ -283,15 +283,15 @@ def zero_padding(target_data, max_length):
 
     # Arguments:
 
-    target_data: numpy array
-        The numpy array which is used as the target of the model's output.
-    max_length: int
-        Maximum length of all target data in the target data list.
+        target_data: numpy array
+            The numpy array which is used as the target of the model's output.
+        max_length: int
+            Maximum length of all target data in the target data list.
 
     # Return:
 
-    padded_target_data: numpy array
-        The padded numpy array which is used as the target of the model's output.
+        padded_target_data: numpy array
+            The padded numpy array which is used as the target of the model's output.
     """
 
     # Insert debugging assertions
@@ -314,19 +314,19 @@ def remove_redundant_zeros(padded_target_data, num_of_cells, num_of_CUEs, num_of
 
     # Arguments:
 
-    padded_target_data: numpy array
-        The padded numpy array which is used as the target of the model's output.
-    num_of_cells: int
-        Number of the cells in the cellular system.
-    num_of_CUEs: int
-        Number of the CUEs in each cell.
-    num_of_D2Ds: int
-        Number of the D2D pairs in each cell.
+        padded_target_data: numpy array
+            The padded numpy array which is used as the target of the model's output.
+        num_of_cells: int
+            Number of the cells in the cellular system.
+        num_of_CUEs: int
+            Number of the CUEs in each cell.
+        num_of_D2Ds: int
+            Number of the D2D pairs in each cell.
 
     # Return:
 
-    target_data: numpy array
-        The numpy array which is used as the target of the model's output.
+        target_data: numpy array
+            The numpy array which is used as the target of the model's output.
     """
 
     # Insert debugging assertions

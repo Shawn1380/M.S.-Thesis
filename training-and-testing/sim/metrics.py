@@ -8,17 +8,17 @@ def get_sum_rate(CUE_rate, D2D_rate):
 
     # Arguments:
 
-    CUE_rate: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The data rate of all CUEs.
-    D2D_rate: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
-        The data rate of all D2D pairs.
+        CUE_rate: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The data rate of all CUEs.
+        D2D_rate: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
+            The data rate of all D2D pairs.
 
     # Return:
 
-    Tuple of numpy arrays: (system_sum_rate, CUE_sum_rate, D2D_sum_rate)
-        system_sum_rate: numpy array with shape (batch_size, ), which stands for sum rate of the multi-cell system.
-        CUE_sum_rate: numpy array with shape (batch_size, ), which stands for sum rate of all CUEs.
-        D2D_sum_rate: numpy array with shape (batch_size, ), which stands for sum rate of all D2D pairs.
+        Tuple of numpy arrays: (system_sum_rate, CUE_sum_rate, D2D_sum_rate)
+            system_sum_rate: numpy array with shape (batch_size, ), which stands for sum rate of the multi-cell system.
+            CUE_sum_rate: numpy array with shape (batch_size, ), which stands for sum rate of all CUEs.
+            D2D_sum_rate: numpy array with shape (batch_size, ), which stands for sum rate of all D2D pairs.
     """
 
     # Insert debugging assertions
@@ -54,17 +54,17 @@ def get_power_consumption(CUE_power, D2D_power):
 
     # Arguments:
 
-    CUE_power: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The transmit power of all CUEs.
-    D2D_power: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
-        The transmit power of all D2D pairs.
+        CUE_power: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The transmit power of all CUEs.
+        D2D_power: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
+            The transmit power of all D2D pairs.
 
     # Return:
 
-    Tuple of numpy arrays: (system_power_consumption, CUE_power_consumption, D2D_power_consumption)
-        system_power_consumption: numpy array with shape (batch_size, ), which stands for power consumption of the multi-cell system.
-        CUE_power_consumption: numpy array with shape (batch_size, ), which stands for power consumption of all CUEs.
-        D2D_power_consumption: numpy array with shape (batch_size, ), which stands for power consumption of all D2D pairs.
+        Tuple of numpy arrays: (system_power_consumption, CUE_power_consumption, D2D_power_consumption)
+            system_power_consumption: numpy array with shape (batch_size, ), which stands for power consumption of the multi-cell system.
+            CUE_power_consumption: numpy array with shape (batch_size, ), which stands for power consumption of all CUEs.
+            D2D_power_consumption: numpy array with shape (batch_size, ), which stands for power consumption of all D2D pairs.
     """
 
     # Insert debugging assertions
@@ -100,25 +100,25 @@ def get_EE(system_sum_rate, CUE_sum_rate, D2D_sum_rate, system_power_consumption
 
     # Arguments:
 
-    system_sum_rate: numpy array with shape (batch_size, )
-        The sum rate of multi-cell system.
-    CUE_sum_rate: numpy array with shape (batch_size, )
-        The sum rate of all CUEs.
-    D2D_sum_rate: numpy array with shape (batch_size, )
-        The sum rate of all D2D pairs.
-    system_power_consumption: numpy array with shape (batch_size, )
-        The power consumption of multi-cell system.
-    CUE_power_consumption: numpy array with shape (batch_size, )
-        The power consumption of all CUEs.
-    D2D_power_consumption: numpy array with shape (batch_size, )
-        The power consumption of all D2D pairs.
+        system_sum_rate: numpy array with shape (batch_size, )
+            The sum rate of multi-cell system.
+        CUE_sum_rate: numpy array with shape (batch_size, )
+            The sum rate of all CUEs.
+        D2D_sum_rate: numpy array with shape (batch_size, )
+            The sum rate of all D2D pairs.
+        system_power_consumption: numpy array with shape (batch_size, )
+            The power consumption of multi-cell system.
+        CUE_power_consumption: numpy array with shape (batch_size, )
+            The power consumption of all CUEs.
+        D2D_power_consumption: numpy array with shape (batch_size, )
+            The power consumption of all D2D pairs.
 
     # Return:
 
-    Tuple of numpy arrays: (system_EE, CUE_EE, D2D_EE)
-        system_EE: numpy array with shape (batch_size, ), which stands for energy efficiency of the multi-cell system.
-        CUE_EE: numpy array with shape (batch_size, ), which stands for energy efficiency of all CUEs.
-        D2D_EE: numpy array with shape (batch_size, ), which stands for energy efficiency of all D2D pairs.
+        Tuple of numpy arrays: (system_EE, CUE_EE, D2D_EE)
+            system_EE: numpy array with shape (batch_size, ), which stands for energy efficiency of the multi-cell system.
+            CUE_EE: numpy array with shape (batch_size, ), which stands for energy efficiency of all CUEs.
+            D2D_EE: numpy array with shape (batch_size, ), which stands for energy efficiency of all D2D pairs.
     """
 
     # Insert debugging assertions
@@ -142,25 +142,25 @@ def get_UIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
 
     # Arguments:
 
-    CUE_rate: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The data rate of all CUEs.
-    D2D_rate: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
-        The data rate of all D2D pairs.
-    CUE_power: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The transmit power of all CUEs.
-    D2D_power: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
-        The transmit power of all D2D pairs.
-    QoS_of_CUE: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The minimum rate requirement of all CUEs (bps/Hz).
+        CUE_rate: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The data rate of all CUEs.
+        D2D_rate: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
+            The data rate of all D2D pairs.
+        CUE_power: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The transmit power of all CUEs.
+        D2D_power: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
+            The transmit power of all D2D pairs.
+        QoS_of_CUE: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The minimum rate requirement of all CUEs (bps/Hz).
 
     # Return: 
     
-    Tuple of numpy arrays: (system_UIR, CUE_UIR, D2D_UIR)
-        system_UIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per user) of the multi-cell system.
-        CUE_UIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per user) of all CUEs.
-        D2D_UIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per user) of all D2D pairs.
+        Tuple of numpy arrays: (system_UIR, CUE_UIR, D2D_UIR)
+            system_UIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per user) of the multi-cell system.
+            CUE_UIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per user) of all CUEs.
+            D2D_UIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per user) of all D2D pairs.
 
-        The UIR is the number of users with unmet needs (minimum rate requirement & power budget) divided by the total number of users.
+            The UIR is the number of users with unmet needs (minimum rate requirement & power budget) divided by the total number of users.
     """
 
     # Insert debugging assertions
@@ -220,27 +220,25 @@ def get_RIR(CUE_rate, D2D_rate, CUE_power, D2D_power, QoS_of_CUE):
 
     # Arguments:
 
-    CUE_rate: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The data rate of all CUEs.
-    D2D_rate: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
-        The data rate of all D2D pairs.
-    CUE_power: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The transmit power of all CUEs.
-    D2D_power: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
-        The transmit power of all D2D pairs.
-    QoS_of_CUE: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
-        The minimum rate requirement of all CUEs (bps/Hz).
-    rate_format: string
-        Determine what kind of format should be used. Either 'per_user' or 'per_realization'.
+        CUE_rate: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The data rate of all CUEs.
+        D2D_rate: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
+            The data rate of all D2D pairs.
+        CUE_power: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The transmit power of all CUEs.
+        D2D_power: numpy array with shape (batch_size, num_of_D2Ds, num_of_CUEs, num_of_cells)
+            The transmit power of all D2D pairs.
+        QoS_of_CUE: numpy array with shape (batch_size, num_of_CUEs, 1, num_of_cells)
+            The minimum rate requirement of all CUEs (bps/Hz).
 
     # Return: 
      
-    Tuple of numpy arrays: (system_RIR, CUE_RIR, D2D_RIR)
-        system_RIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per realization) of the multi-cell system.
-        CUE_RIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per realization) of all CUEs.
-        D2D_RIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per realization) of all D2D pairs.
+        Tuple of numpy arrays: (system_RIR, CUE_RIR, D2D_RIR)
+            system_RIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per realization) of the multi-cell system.
+            CUE_RIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per realization) of all CUEs.
+            D2D_RIR: numpy array with shape (batch_size, ), which stands for infeasibility rate (per realization) of all D2D pairs.
 
-        If there is a user's need are not met, the RIR is 0; otherwise, the RIR is 1.
+            If there is an user's need are not met, the RIR is 0; otherwise, the RIR is 1.
     """
 
     # Insert debugging assertions
@@ -302,19 +300,19 @@ def get_avg_sum_rate(system_sum_rate, CUE_sum_rate, D2D_sum_rate):
 
     # Arguments:
 
-    system_sum_rate: numpy array with shape (batch_size, )
-        The sum rate of the multi-cell system.
-    CUE_sum_rate: numpy array with shape (batch_size, )
-        The sum rate of all CUEs.
-    D2D_sum_rate: numpy array with shape (batch_size, )
-        The sum rate of all D2D pairs.
+        system_sum_rate: numpy array with shape (batch_size, )
+            The sum rate of the multi-cell system.
+        CUE_sum_rate: numpy array with shape (batch_size, )
+            The sum rate of all CUEs.
+        D2D_sum_rate: numpy array with shape (batch_size, )
+            The sum rate of all D2D pairs.
 
     # Return:
 
-    Tuple of floats: (avg_system_sum_rate, avg_CUE_sum_rate, avg_D2D_sum_rate)
-        avg_system_sum_rate: Summation over all system sum rate in batch divided by the number of realizations.
-        avg_CUE_sum_rate: Summation over all CUE sum rate in batch divided by the number of realizations.
-        avg_D2D_sum_rate: Summation over all D2D sum rate in batch divided by the number of realizations.
+        Tuple of floats: (avg_system_sum_rate, avg_CUE_sum_rate, avg_D2D_sum_rate)
+            avg_system_sum_rate: Summation over all system sum rate in batch divided by the number of realizations.
+            avg_CUE_sum_rate: Summation over all CUE sum rate in batch divided by the number of realizations.
+            avg_D2D_sum_rate: Summation over all D2D sum rate in batch divided by the number of realizations.
     """
 
     # Insert debugging assertions
@@ -335,19 +333,19 @@ def get_avg_power_consumption(system_power_consumption, CUE_power_consumption, D
 
     # Arguments:
 
-    system_power_consumption: numpy array with shape (batch_size, )
-        The power consumption of the multi-cell system.
-    CUE_power_consumption: numpy array with shape (batch_size, )
-        The power consumption of all CUEs.
-    D2D_power_consumption: numpy array with shape (batch_size, )
-        The power consumption of all D2D pairs.
+        system_power_consumption: numpy array with shape (batch_size, )
+            The power consumption of the multi-cell system.
+        CUE_power_consumption: numpy array with shape (batch_size, )
+            The power consumption of all CUEs.
+        D2D_power_consumption: numpy array with shape (batch_size, )
+            The power consumption of all D2D pairs.
 
     # Return:
 
-    Tuple of floats: (avg_system_power_consumption, avg_CUE_power_consumption, avg_D2D_power_consumption)
-        avg_system_power_consumption: Summation over all system power consumption in batch divided by the number of realizations.
-        avg_CUE_power_consumption: Summation over all CUE power consumption in batch divided by the number of realizations.
-        avg_D2D_power_consumption: Summation over all D2D power consumption in batch divided by the number of realizations.
+        Tuple of floats: (avg_system_power_consumption, avg_CUE_power_consumption, avg_D2D_power_consumption)
+            avg_system_power_consumption: Summation over all system power consumption in batch divided by the number of realizations.
+            avg_CUE_power_consumption: Summation over all CUE power consumption in batch divided by the number of realizations.
+            avg_D2D_power_consumption: Summation over all D2D power consumption in batch divided by the number of realizations.
     """
 
     # Insert debugging assertions
@@ -368,20 +366,19 @@ def get_avg_EE(system_EE, CUE_EE, D2D_EE):
 
     # Arguments:
 
-    
-    system_EE: numpy array with shape (batch_size, )
-        The energy efficiency of the multi-cell system.
-    CUE_EE: numpy array with shape (batch_size, )
-        The energy efficiency of all CUEs.
-    D2D_EE: numpy array with shape (batch_size, )
-        The energy efficiency of all D2D pairs.
+        system_EE: numpy array with shape (batch_size, )
+            The energy efficiency of the multi-cell system.
+        CUE_EE: numpy array with shape (batch_size, )
+            The energy efficiency of all CUEs.
+        D2D_EE: numpy array with shape (batch_size, )
+            The energy efficiency of all D2D pairs.
 
     # Return:
 
-    Tuple of floats: (avg_system_EE, avg_CUE_EE, avg_D2D_EE)
-        avg_system_EE: Summation over all system energy effciency in batch divided by the number of the realizations.
-        avg_CUE_EE: Summation over all CUE energy effciency in batch divided by the number of the realizations.
-        avg_D2D_EE: Summation over all D2D energy effciency in batch divided by the number of the realizations.
+        Tuple of floats: (avg_system_EE, avg_CUE_EE, avg_D2D_EE)
+            avg_system_EE: Summation over all system energy effciency in batch divided by the number of the realizations.
+            avg_CUE_EE: Summation over all CUE energy effciency in batch divided by the number of the realizations.
+            avg_D2D_EE: Summation over all D2D energy effciency in batch divided by the number of the realizations.
     """
 
     # Insert debugging assertions
@@ -402,19 +399,19 @@ def get_avg_UIR(system_UIR, CUE_UIR, D2D_UIR):
 
     # Arguments:
 
-    system_UIR: numpy array with shape (batch_size, )
-        The infeasibility rate (per user) of the multi-cell system.
-    CUE_UIR: numpy array with shape (batch_size, )
-        The infeasibility rate (per user) of all CUEs.
-    D2D_UIR: numpy array with shape (batch_size, )
-        The infeasibility rate (per user) of all D2D pairs.
+        system_UIR: numpy array with shape (batch_size, )
+            The infeasibility rate (per user) of the multi-cell system.
+        CUE_UIR: numpy array with shape (batch_size, )
+            The infeasibility rate (per user) of all CUEs.
+        D2D_UIR: numpy array with shape (batch_size, )
+            The infeasibility rate (per user) of all D2D pairs.
 
     # Return:
 
-    Tuple of floats: (avg_system_UIR, avg_CUE_UIR, avg_D2D_UIR)
-        avg_system_UIR: Summation over all system infeasibility rate (per user) in batch divided by the number of the realizations.
-        avg_CUE_UIR: Summation over all CUE infeasibility rate (per user) in batch divided by the number of the realizations.
-        avg_D2D_UIR: Summation over all D2D infeasibility rate (per user) in batch divided by the number of the realizations.
+        Tuple of floats: (avg_system_UIR, avg_CUE_UIR, avg_D2D_UIR)
+            avg_system_UIR: Summation over all system infeasibility rate (per user) in batch divided by the number of the realizations.
+            avg_CUE_UIR: Summation over all CUE infeasibility rate (per user) in batch divided by the number of the realizations.
+            avg_D2D_UIR: Summation over all D2D infeasibility rate (per user) in batch divided by the number of the realizations.
     """
 
     # Insert debugging assertions
@@ -435,19 +432,19 @@ def get_avg_RIR(system_RIR, CUE_RIR, D2D_RIR):
 
     # Arguments:
 
-    system_RIR: numpy array with shape (batch_size, )
-        The infeasibility rate (per realization) of the multi-cell system.
-    CUE_RIR: numpy array with shape (batch_size, )
-        The infeasibility rate (per realization) of all CUEs.
-    D2D_RIR: numpy array with shape (batch_size, )
-        The infeasibility rate (per realization) of all D2D pairs.
+        system_RIR: numpy array with shape (batch_size, )
+            The infeasibility rate (per realization) of the multi-cell system.
+        CUE_RIR: numpy array with shape (batch_size, )
+            The infeasibility rate (per realization) of all CUEs.
+        D2D_RIR: numpy array with shape (batch_size, )
+            The infeasibility rate (per realization) of all D2D pairs.
 
     # Return:
 
-    Tuple of floats: (avg_system_RIR, avg_CUE_RIR, avg_D2D_RIR)
-        avg_system_RIR: Summation over all system infeasibility rate (per realization) in batch divided by the number of the realizations.
-        avg_CUE_RIR: Summation over all CUE infeasibility rate (per realization) in batch divided by the number of the realizations.
-        avg_D2D_RIR: Summation over all D2D infeasibility rate (per realization) in batch divided by the number of the realizations.
+        Tuple of floats: (avg_system_RIR, avg_CUE_RIR, avg_D2D_RIR)
+            avg_system_RIR: Summation over all system infeasibility rate (per realization) in batch divided by the number of the realizations.
+            avg_CUE_RIR: Summation over all CUE infeasibility rate (per realization) in batch divided by the number of the realizations.
+            avg_D2D_RIR: Summation over all D2D infeasibility rate (per realization) in batch divided by the number of the realizations.
     """
 
     # Insert debugging assertions
