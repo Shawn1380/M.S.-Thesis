@@ -1,6 +1,6 @@
 """
 Pooling layers module for Python
-============================
+================================
 
 spp is a pooling layers module for keras, and requires keras version 2.0 or greater.
 
