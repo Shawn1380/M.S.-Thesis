@@ -6,13 +6,13 @@ The values of these constants are determined according to the simulation paramet
 
 # Constants:
 
-    cell_range: dict
+    cell_range: set
         Limitation on the number of cells.
         Default value: {2, 3}
-    CUE_range: dict
+    CUE_range: set
         Limitation on the number of CUEs.
         Default value: {2, 3, 4}
-    D2D_range: dict
+    D2D_range: set
         Limitation on the number of D2D pairs.
         Default value: {2, 3, 4}
     data_proportion: float
