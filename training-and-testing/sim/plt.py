@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def plot_sum_rate(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FCN_list):
-    """ Create a grouped bar chart to show performance of sum rate.
+    """ Create a grouped bar chart to show the performance of sum rate.
 
     # Aruguments:
 
@@ -81,7 +81,7 @@ def plot_sum_rate(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_lis
     plt.show()
 
 def plot_power_consumption(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FCN_list):
-    """ Create a grouped bar chart to show performance of power consumption.
+    """ Create a grouped bar chart to show the performance of power consumption.
 
     # Aruguments:
 
@@ -156,7 +156,7 @@ def plot_power_consumption(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list
     plt.show()
 
 def plot_EE(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FCN_list):
-    """ Create a grouped bar chart to show performance of energy efficiency.
+    """ Create a grouped bar chart to show the performance of energy efficiency.
 
     # Aruguments:
 
@@ -231,7 +231,7 @@ def plot_EE(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FCN
     plt.show()
 
 def plot_UIR(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FCN_list):
-    """ Create a grouped bar chart to show performance of infeasibility rate (per user).
+    """ Create a grouped bar chart to show the performance of infeasibility rate (per user).
 
     # Aruguments:
 
@@ -309,7 +309,7 @@ def plot_UIR(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FC
     plt.show()
 
 def plot_RIR(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FCN_list):
-    """ Create a grouped bar chart to show performance of infeasibility rate (per realization).
+    """ Create a grouped bar chart to show the performance of infeasibility rate (per realization).
 
     # Aruguments:
 
@@ -386,8 +386,8 @@ def plot_RIR(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FC
     plt.legend(loc = 'best')
     plt.show()
 
-def plot_computational_time(num_of_CUEs, num_of_D2Ds, CNN_SPP_list, CNN_list, FCN_list):
-    """ Create a grouped bar chart to show performance of computational time.
+def plot_NN_computational_time(num_of_CUEs, num_of_D2Ds, CNN_SPP_list, CNN_list, FCN_list):
+    """ Create a grouped bar chart to show the different neural network based algorithms' performance of computational time.
 
     # Aruguments:
 
@@ -395,8 +395,6 @@ def plot_computational_time(num_of_CUEs, num_of_D2Ds, CNN_SPP_list, CNN_list, FC
             Number of the CUEs in each cell.
         num_of_D2Ds: set
             Number of the D2D pairs in each cell.
-        CA_list: list
-            The heights of the bars, which stands for computational time obtained by CVX solver.
         CNN_SPP_list: list
             The heights of the bars, which stands for computational time obtained by CNN with spatial pyramid pooling layer.
         CNN_list: list
@@ -448,5 +446,55 @@ def plot_computational_time(num_of_CUEs, num_of_D2Ds, CNN_SPP_list, CNN_list, FC
 
     # Set the tick locations and labels of the x-axis
     plt.xticks(x_index + 1 * width, x_labels)
+    plt.legend(loc = 'best')
+    plt.show()
+
+def plot_CA_computational_time(num_of_CUEs, num_of_D2Ds, CA_list):
+    """ Create a grouped bar chart to show the convex approximation based algorithm's performance of computational time.
+
+    # Aruguments:
+
+        num_of_CUEs: set
+            Number of the CUEs in each cell.
+        num_of_D2Ds: set
+            Number of the D2D pairs in each cell.
+        CA_list: list
+            The heights of the bars, which stands for computational time obtained by CVX solver.
+
+    # Return:
+
+        None
+    """
+
+    # Insert debugging assertions
+    assert num_of_CUEs.issubset(constants.CUE_range), f"The 'num_of_CUEs' must be subset of {constants.CUE_range}."
+    assert num_of_D2Ds.issubset(constants.D2D_range), f"The 'num_of_D2Ds' must be subset of {constants.D2D_range}."
+    assert type(CA_list) is list, f"The 'CA_list' must be list."
+
+    # Add custom x-axis tick labels
+    x_labels = [f'({i}, {j})' for (i, j) in product(num_of_CUEs, num_of_D2Ds)]
+
+    # Set the label locations and width of the bar
+    x_index = np.arange(len(x_labels))
+    width = 0.2
+
+    # Set the size of figure
+    plt.figure(figsize = (8.53, 4.8))
+
+    # Plot the bar
+    plt.bar(x_index, CA_list, width, color = '#1f77b4', label = 'CA')
+
+    # Set the figure title and label for the y-axis
+    plt.title('Computational time')
+    plt.ylabel('Computational time (sec)')
+ 
+    # Set the label for the x-axis
+    plt.xlabel('(Number of CUEs, Number of D2D pairs)')
+    
+    # Show the major grid lines with dark grey lines
+    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
+
+    # Set the tick locations and labels of the x-axis
+    plt.xticks(x_index, x_labels)
     plt.legend(loc = 'best')
     plt.show()
