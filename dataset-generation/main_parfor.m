@@ -1,11 +1,6 @@
 function main_parfor(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_training_data)
 
-%%%%%%%%%%%%%%%%%%%% Parameters setting %%%%%%%%%%%%%%%%%%%%
-%num_of_training_data = 3000; % Number of the training data
-%num_of_cells = 2; % Number of the cells in the system
-%num_of_CUEs = 2; % Number of the CUEs in each cell
-%num_of_D2Ds = 2; % Number of the D2D pairs in each cell
-
+%%%%%%%%%%%%%%%%%%%% Parameters settings %%%%%%%%%%%%%%%%%%%%
 radius = 500; % The radius of the cell (meter)
 Pmax = 0.2; % Maximun transimit power of all devices (Watt)
 QoS_of_D2D = 3; % Minimum data rate requirement of all D2D pairs (bps/Hz)
@@ -13,7 +8,7 @@ proportion = 0.2; % The proportion of CUE's minimum rate requirement to CUE's ma
 
 max_dinkelbach_iterations = 3; % Maximum iterations of dinkelbach method 
 max_condensation_iterations = 2; % Maximum iterations of condensation method
-%%%%%%%%%%%%%%%%%%%% Parameters setting %%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% Parameters settings %%%%%%%%%%%%%%%%%%%%
 
 input_data = cell(1, num_of_training_data);
 target_data = cell(2, num_of_training_data);
@@ -23,7 +18,7 @@ target_data = cell(2, num_of_training_data);
 
 target_data_1 = cell(1, num_of_training_data);
 target_data_2 = cell(1, num_of_training_data);
-parfor index = 1:num_of_training_data
+parfor index = 1 : num_of_training_data
 
 	success = 0;
 	while (success ~= 1)

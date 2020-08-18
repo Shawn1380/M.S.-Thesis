@@ -1,9 +1,21 @@
-% num_of_cells: 2
-% num_of_CUEs: 2~5
-% num_of_D2Ds: 2~5
-% num_of_training_data: 2000
-main(2, 2, 3, 8000);
-main(2, 2, 3, 10000);
-main(2, 2, 4, 8000);
-main(2, 2, 4, 10000);
+% Non-parallel for loop version
+main(2, 2, 2, 20000);
+main(2, 2, 3, 20000);
+main(2, 2, 4, 20000);
+main(2, 3, 2, 20000);
+main(2, 3, 3, 20000);
+main(2, 3, 4, 20000);
+main(2, 4, 2, 20000);
+main(2, 4, 3, 20000);
+main(2, 4, 4, 20000);
 
+% Parallel for loop version
+main_parfor(2, 2, 2, 20000);
+main_parfor(2, 2, 3, 20000);
+main_parfor(2, 2, 4, 20000);
+main_parfor(2, 3, 2, 20000);
+main_parfor(2, 3, 3, 20000);
+main_parfor(2, 3, 4, 20000);
+main_parfor(2, 4, 2, 20000);
+main_parfor(2, 4, 3, 20000);
+main_parfor(2, 4, 4, 20000);
