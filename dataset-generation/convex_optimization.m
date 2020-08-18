@@ -28,7 +28,7 @@ PA_inefficiency_factor = 0.35; % Power amplifier inefficiency factor
 [system_EE, total_data_rate, total_power_consumption, initial_CUE_rate, initial_D2D_rate, feasible] = calculate_system_EE(num_of_cells, num_of_CUEs, num_of_D2Ds, channel_gain_matrix, initial_CUE_power, initial_D2D_power, Pmax, QoS_of_CUE, QoS_of_D2D);
 
 % Summary
-summary(num_of_cells, num_of_CUEs, num_of_D2Ds, system_EE, total_data_rate, total_power_consumption, initial_CUE_rate, initial_D2D_rate, initial_CUE_power, initial_D2D_power, feasible, Pmax, QoS_of_CUE, QoS_of_D2D, proportion, max_dinkelbach_iterations, max_condensation_iterations);
+%summary(num_of_cells, num_of_CUEs, num_of_D2Ds, system_EE, total_data_rate, total_power_consumption, initial_CUE_rate, initial_D2D_rate, initial_CUE_power, initial_D2D_power, feasible, Pmax, QoS_of_CUE, QoS_of_D2D, proportion, max_dinkelbach_iterations, max_condensation_iterations);
 
 % Used in the condensation method (approximate the posynomial in denominator with a monomial)
 CUE_power = initial_CUE_power;
@@ -286,13 +286,11 @@ for dinkelbach_iteration = 1 : max_dinkelbach_iterations
             condensation_iterations = condensation_iterations + 1;
         elseif strcmp(cvx_status, 'Infeasible')
             cprintf('Red', 'The GP problem has been proven to be infeasible.\n\n');
-            %error("Error. The GP problem has been proven to be infeasible, please increase the 'Pmax' or decrease the 'proportion' and the 'QoS_of_D2D'.")
             optimal_CUE_power = NaN;
             optimal_D2D_power = NaN;
             success = 0;
             return
         else
-            %error('Error. The solver failed to make sufficient progress towards a solution.')
             cprintf('Red', 'The solver failed to make sufficient progress towards a solution.\n\n');
             optimal_CUE_power = NaN;
             optimal_D2D_power = NaN;
