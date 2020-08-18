@@ -1,5 +1,6 @@
-""" This module includes functions to load and fetch our in-house datasets and pre-trained models. """
+""" This module includes functions to load and fetch our in-house datasets and well-trained keras models. """
 
+from spp.layers import SpatialPyramidPooling
 from keras import backend as K
 from keras import models
 from prep import constants
@@ -34,7 +35,7 @@ def load_input_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples, imag
             Number of the CUEs in each cell.
         num_of_D2Ds: int
             Number of the D2D pairs in each cell.
-        num_of_samples: int or tuple
+        num_of_samples: int or set
             Number of the random channel realizations according to the above parameters setting.
         image_data_format: string
             Either 'channels_first' or 'channels_last'.
@@ -64,9 +65,9 @@ def load_input_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples, imag
 
         # Get the file name of the desired .mat file from the directory
         dataset_dir = pathlib.Path.cwd().joinpath('dataset')
-        cell_dir = '{} cell'.format(num_of_cells)
+        cell_dir = f'{num_of_cells}-cell'
         dataset_dir = dataset_dir.joinpath(cell_dir)
-        file_name = 'data_Cell_{}_CUE_{}_D2D_{}_{}.mat'.format(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples)
+        file_name = f'data_Cell_{num_of_cells}_CUE_{num_of_CUEs}_D2D_{num_of_D2Ds}_{num_of_samples}.mat'
         mat_fname = dataset_dir.joinpath(file_name)
 
         # Load the .mat file contents
@@ -93,11 +94,11 @@ def load_input_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples, imag
     if type(num_of_samples) is int:    
         return inner(num_of_samples)
 
-    elif type(num_of_samples) is tuple:
+    elif type(num_of_samples) is set:
         return np.concatenate(list(map(inner, num_of_samples)), axis = 0) 
 
     else:
-        raise TypeError("The 'num_of_samples' must be integer or tuple.")
+        raise TypeError("The 'num_of_samples' must be integer or set.")
 
 def load_target_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples):
     """ Return target data (power allocation vector) in numpy array.
@@ -110,7 +111,7 @@ def load_target_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples):
             Number of the CUEs in each cell.
         num_of_D2Ds: int
             Number of the D2D pairs in each cell.
-        num_of_samples: int or tuple
+        num_of_samples: int or set
             Number of the random channel realizations according to the above parameters setting.
 
     # Return:
@@ -135,9 +136,9 @@ def load_target_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples):
 
         # Get the file name of the desired .mat file from the directory  
         dataset_dir = pathlib.Path.cwd().joinpath('dataset')
-        cell_dir = '{} cell'.format(num_of_cells)
+        cell_dir = f'{num_of_cells}-cell'
         dataset_dir = dataset_dir.joinpath(cell_dir)
-        file_name = 'data_Cell_{}_CUE_{}_D2D_{}_{}.mat'.format(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples)
+        file_name = f'data_Cell_{num_of_cells}_CUE_{num_of_CUEs}_D2D_{num_of_D2Ds}_{num_of_samples}.mat'
         mat_fname = dataset_dir.joinpath(file_name)
 
         # Load the .mat file contents
@@ -160,13 +161,13 @@ def load_target_data(num_of_cells, num_of_CUEs, num_of_D2Ds, num_of_samples):
     if type(num_of_samples) is int:
         return inner(num_of_samples)
 
-    elif type(num_of_samples) is tuple:
+    elif type(num_of_samples) is set:
         return np.concatenate(list(map(inner, num_of_samples)), axis = 0) 
 
     else:
-        raise TypeError("The 'num_of_samples' must be integer or tuple.")
+        raise TypeError("The 'num_of_samples' must be integer or set.")
 
-def load_model(NN_type, num_of_cells, num_of_CUEs, num_of_D2Ds = None):
+def load_model(NN_type, num_of_cells, num_of_CUEs = None, num_of_D2Ds = None):
     """ Whole-model loading (configuration and weights).
 
     Whole-model loading means reading a file that contains:
@@ -181,7 +182,7 @@ def load_model(NN_type, num_of_cells, num_of_CUEs, num_of_D2Ds = None):
             Type of neural network.
         num_of_cells: int
             Number of the cells in the cellular system.
-        num_of_CUEs: int
+        num_of_CUEs: int, optional
             Number of the CUEs in each cell.
         num_of_D2Ds: int, optional
             Number of the D2D pairs in each cell.
@@ -189,40 +190,42 @@ def load_model(NN_type, num_of_cells, num_of_CUEs, num_of_D2Ds = None):
     # Return:
 
         model: keras.engine.sequential.Sequential
-            A keras model instance, which is saved in HDF5 format.
+            A keras model instance (compiled).
     """
 
     # Insert debugging assertions
     assert type(NN_type) is str, "The 'NN_type' must be string."
     assert num_of_cells in constants.cell_range, f"The 'num_of_cells' must be element in {constants.cell_range}."
-    assert num_of_CUEs in constants.CUE_range, f"The 'num_of_CUEs' must be element in {constants.CUE_range}."
+    assert num_of_CUEs in constants.CUE_range or num_of_CUEs is None, f"The 'num_of_CUEs' must be element in {constants.CUE_range}."
     assert num_of_D2Ds in constants.D2D_range or num_of_D2Ds is None, f"The 'num_of_D2Ds' must be element in {constants.D2D_range}."
 
     # Get the path to the saved file 
     model_dir = pathlib.Path.cwd().joinpath('model')
-    cell_dir = '{} cell'.format(num_of_cells)
+    cell_dir = f'{num_of_cells}-cell'
     model_dir = model_dir.joinpath(cell_dir)
 
-    if num_of_D2Ds:
-        file_name = 'model_Cell_{}_CUE_{}_D2D_{}_{}'.format(num_of_cells, num_of_CUEs, num_of_D2Ds, NN_type)
-    else:
-        file_name = 'model_Cell_{}_CUE_{}_{}'.format(num_of_cells, num_of_CUEs, NN_type)
-
-    file_path = model_dir.joinpath(file_name)
-
     # Load the compiled model
-    model = models.load_model(file_path, custom_objects = None, compile = True)
+    if num_of_CUEs and num_of_D2Ds:
+        file_name = f'model_Cell_{num_of_cells}_CUE_{num_of_CUEs}_D2D_{num_of_D2Ds}_{NN_type}.h5'
+        file_path = str(model_dir.joinpath(file_name))
+        model = models.load_model(file_path, custom_objects = None, compile = True)
+    else:
+        file_name = f'model_Cell_{num_of_cells}_{NN_type}.h5'
+        file_path = str(model_dir.joinpath(file_name))
+        model = models.load_model(file_path, custom_objects = {'SpatialPyramidPooling': SpatialPyramidPooling}, compile = True)
 
     # Return model
     return model
 
-def load_weights(NN_type, num_of_cells, num_of_CUEs, num_of_D2Ds = None):
+def load_weights(model, NN_type, num_of_cells, num_of_CUEs = None, num_of_D2Ds = None):
     """ Weights-only loading.
 
     Weights-only loading means reading a file that contains the weights of the model.
 
     # Aruguments:
 
+        model: keras.engine.sequential.Sequential
+            A keras model instance (uncompiled).
         NN_type: string
             Type of neural network.
         num_of_cells: int
@@ -234,16 +237,35 @@ def load_weights(NN_type, num_of_cells, num_of_CUEs, num_of_D2Ds = None):
 
     # Return:
 
-        None
+        model: keras.engine.sequential.Sequential
+            A keras model instance (compiled).
     """
 
     # Insert debugging assertions
     assert type(NN_type) is str, "The 'NN_type' must be string."
     assert num_of_cells in constants.cell_range, f"The 'num_of_cells' must be element in {constants.cell_range}."
-    assert num_of_CUEs in constants.CUE_range, f"The 'num_of_CUEs' must be element in {constants.CUE_range}."
+    assert num_of_CUEs in constants.CUE_range or num_of_CUEs is None, f"The 'num_of_CUEs' must be element in {constants.CUE_range}."
     assert num_of_D2Ds in constants.D2D_range or num_of_D2Ds is None, f"The 'num_of_D2Ds' must be element in {constants.D2D_range}."
 
-def load_configuration(NN_type, num_of_cells, num_of_CUEs, num_of_D2Ds = None):
+    # Get the path to the saved file 
+    model_dir = pathlib.Path.cwd().joinpath('model')
+    cell_dir = f'{num_of_cells}-cell'
+    model_dir = model_dir.joinpath(cell_dir)
+
+    if num_of_CUEs and num_of_D2Ds:
+        file_name = f'weights_Cell_{num_of_cells}_CUE_{num_of_CUEs}_D2D_{num_of_D2Ds}_{NN_type}.h5'
+    else:
+        file_name = f'weights_Cell_{num_of_cells}_{NN_type}.h5'
+    
+    file_path = str(model_dir.joinpath(file_name))
+
+    # Load weights from the compiled model
+    model = model.load_weights(file_path, by_name = False, skip_mismatch = False, reshape = False)
+
+    # Return model
+    return model
+
+def load_configuration(NN_type, num_of_cells, num_of_CUEs = None, num_of_D2Ds = None):
     """ Configuration-only loading.
 
     Weights-only loading means reading a file that contains the architecture of the model,
@@ -255,18 +277,46 @@ def load_configuration(NN_type, num_of_cells, num_of_CUEs, num_of_D2Ds = None):
             Type of neural network.
         num_of_cells: int
             Number of the cells in the cellular system.
-        num_of_CUEs: int
+        num_of_CUEs: int, optional
             Number of the CUEs in each cell.
         num_of_D2Ds: int, optional
             Number of the D2D pairs in each cell.
 
     # Return:
 
-        None
+        model: keras.engine.sequential.Sequential
+            A keras model instance (uncompiled).
     """
 
     # Insert debugging assertions
     assert type(NN_type) is str, "The 'NN_type' must be string."
     assert num_of_cells in constants.cell_range, f"The 'num_of_cells' must be element in {constants.cell_range}."
-    assert num_of_CUEs in constants.CUE_range, f"The 'num_of_CUEs' must be element in {constants.CUE_range}."
+    assert num_of_CUEs in constants.CUE_range or num_of_CUEs is None, f"The 'num_of_CUEs' must be element in {constants.CUE_range}."
     assert num_of_D2Ds in constants.D2D_range or num_of_D2Ds is None, f"The 'num_of_D2Ds' must be element in {constants.D2D_range}."
+
+    # Get the path to the saved file 
+    model_dir = pathlib.Path.cwd().joinpath('model')
+    cell_dir = f'{num_of_cells}-cell'
+    model_dir = model_dir.joinpath(cell_dir)
+
+    # Load configuration from the compiled model
+    if num_of_CUEs and num_of_D2Ds:
+        file_name = f'configuration_Cell_{num_of_cells}_CUE_{num_of_CUEs}_D2D_{num_of_D2Ds}_{NN_type}.json'
+        file_path = str(model_dir.joinpath(file_name))
+
+        with open(file_path, 'r') as json_file:
+            json_string = json_file.read()
+
+        model = models.model_from_json(json_string, custom_objects = None)
+
+    else:
+        file_name = f'configuration_Cell_{num_of_cells}_{NN_type}.json'
+        file_path = str(model_dir.joinpath(file_name))
+        
+        with open(file_path, 'r') as json_file:
+            json_string = json_file.read()
+
+        model = models.model_from_json(json_string, custom_objects = {'SpatialPyramidPooling': SpatialPyramidPooling})
+
+    # Return model
+    return model
