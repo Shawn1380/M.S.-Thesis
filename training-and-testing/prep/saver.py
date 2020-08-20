@@ -1,6 +1,7 @@
 """ This module includes functions to save well-trained keras model. """
 
 from prep import constants
+import scipy.io as sio
 import pathlib
 import keras
 
@@ -98,7 +99,6 @@ def save_weights(model, NN_type, num_of_cells, num_of_CUEs = None, num_of_D2Ds =
     # Save the weights in HDF5 format
     model.save_weights(file_path, overwrite = False)
 
-
 def save_configuration(model, NN_type, num_of_cells, num_of_CUEs = None, num_of_D2Ds = None):
     """ Configuration-only saving.
 
@@ -147,3 +147,24 @@ def save_configuration(model, NN_type, num_of_cells, num_of_CUEs = None, num_of_
 
     with open(file_path, 'w') as json_file:
         json_file.write(configuration)
+
+def save_simulation_results(file_name, **kwargs):
+    """ Save the simulation results into a MATLAB-style .mat file.
+
+    # Aruguments:
+
+        file_name: str
+            Name of the .mat file.
+        **kwargs: optional
+            Arbitrary keyword arguments.
+            
+    # Return:
+
+        None
+    """
+
+    # Insert debugging assertions
+    assert type(file_name) is str, "The 'filw_name' must be string."
+    
+    # Save a dictionary of names and arrays into a MATLAB-style .mat file
+    sio.savemat(file_name, kwargs)
