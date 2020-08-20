@@ -1,4 +1,4 @@
-from prep import preprocessing, loader  
+from prep import preprocessing, loader, saver
 from sim import simulation, metrics, plt
 from itertools import product
 import time
@@ -233,10 +233,20 @@ for FCN_x_test, CNN_x_test, CNN_SPP_x_test, y_test, (i, j) in zip(FCN_x_test_lis
     CNN_SPP_list_RIR.append(CNN_SPP_avg_D2D_RIR)
     '''
 
-plt.plot_sum_rate('system', num_of_CUEs, num_of_D2Ds, CA_list_sum_rate, CNN_SPP_list_sum_rate, CNN_list_sum_rate, FCN_list_sum_rate)
-plt.plot_power_consumption('system', num_of_CUEs, num_of_D2Ds, CA_list_power_consumption, CNN_SPP_list_power_consumption, CNN_list_power_consumption, FCN_list_power_consumption)
-plt.plot_EE('system', num_of_CUEs, num_of_D2Ds, CA_list_EE, CNN_SPP_list_EE, CNN_list_EE, FCN_list_EE)
+# Plot the simulation results as .pdf file (by plt module) 
+plt.plot_sum_rate("system", num_of_CUEs, num_of_D2Ds, CA_list_sum_rate, CNN_SPP_list_sum_rate, CNN_list_sum_rate, FCN_list_sum_rate)
+plt.plot_power_consumption("system", num_of_CUEs, num_of_D2Ds, CA_list_power_consumption, CNN_SPP_list_power_consumption, CNN_list_power_consumption, FCN_list_power_consumption)
+plt.plot_EE("system", num_of_CUEs, num_of_D2Ds, CA_list_EE, CNN_SPP_list_EE, CNN_list_EE, FCN_list_EE)
 plt.plot_NN_computational_time(num_of_CUEs, num_of_D2Ds, CNN_SPP_list_time, CNN_list_time, FCN_list_time)
 plt.plot_CA_computational_time(num_of_CUEs, num_of_D2Ds, CA_list_time)
 #plt.plot_UIR('system', num_of_CUEs, num_of_D2Ds, CA_list_UIR, CNN_SPP_list_UIR, CNN_list_UIR, FCN_list_UIR)
 #plt.plot_RIR('system', num_of_CUEs, num_of_D2Ds, CA_list_RIR, CNN_SPP_list_RIR, CNN_list_RIR, FCN_list_RIR)
+
+# Save the simulation results into .mat file (by saver module)
+saver.save_simulation_results("fig7_2.mat", CA = CA_list_sum_rate, CNN_SPP = CNN_SPP_list_sum_rate, CNN = CNN_list_sum_rate, FCN = FCN_list_sum_rate)
+saver.save_simulation_results("fig7_3.mat", CA = CA_list_power_consumption, CNN_SPP = CNN_SPP_list_power_consumption, CNN = CNN_list_power_consumption, FCN = FCN_list_power_consumption)
+saver.save_simulation_results("fig7_1.mat", CA = CA_list_EE, CNN_SPP = CNN_SPP_list_EE, CNN = CNN_list_EE, FCN = FCN_list_EE)
+saver.save_simulation_results("fig7_5.mat", CNN_SPP = CNN_SPP_list_time, CNN = CNN_list_time, FCN = FCN_list_time)
+saver.save_simulation_results("fig7_4.mat", CA = CA_list_time)
+#saver.save_simulation_results("fig7_6.mat", CA = CA_list_UIR, CNN_SPP = CNN_SPP_list_UIR, CNN = CNN_list_UIR, FCN = FCN_list_UIR)
+#saver.save_simulation_results("fig7_7.mat", CA = CA_list_RIR, CNN_SPP = CNN_SPP_list_RIR, CNN = CNN_list_RIR, FCN = FCN_list_RIR)
