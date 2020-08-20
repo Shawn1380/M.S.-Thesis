@@ -50,6 +50,10 @@ def plot_sum_rate(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_lis
     # Set the size of figure
     plt.figure(figsize = (8.53, 4.8))
 
+    # Show the major grid lines with dark grey lines
+    plt.rc('axes', axisbelow = True)
+    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
+
     # Each bar will be shifted 'width' units from the previous one
     plt.bar(x_index, CA_list, width, color = '#1f77b4', label = 'CA')
     plt.bar(x_index + 1 * width, CNN_SPP_list, width, color = '#ff7f0e', label = 'CNN-SPP')
@@ -71,13 +75,13 @@ def plot_sum_rate(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_lis
 
     # Set the label for the x-axis
     plt.xlabel('(Number of CUEs, Number of D2D pairs)')
-    
-    # Show the major grid lines with dark grey lines
-    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
 
     # Set the tick locations and labels of the x-axis
     plt.xticks(x_index + 1.5 * width, x_labels)
     plt.legend(loc = 'best')
+
+    # Save plot as .pdf file
+    plt.savefig("fig7_2_python.pdf")
     plt.show()
 
 def plot_power_consumption(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FCN_list):
@@ -125,6 +129,10 @@ def plot_power_consumption(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list
     # Set the size of figure
     plt.figure(figsize = (8.53, 4.8))
 
+    # Show the major grid lines with dark grey lines
+    plt.rc('axes', axisbelow = True)
+    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
+
     # Each bar will be shifted 'width' units from the previous one
     plt.bar(x_index, CA_list, width, color = '#1f77b4', label = 'CA')
     plt.bar(x_index + 1 * width, CNN_SPP_list, width, color = '#ff7f0e', label = 'CNN-SPP')
@@ -146,13 +154,13 @@ def plot_power_consumption(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list
 
     # Set the label for the x-axis
     plt.xlabel('(Number of CUEs, Number of D2D pairs)')
-    
-    # Show the major grid lines with dark grey lines
-    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
 
     # Set the tick locations and labels of the x-axis
     plt.xticks(x_index + 1.5 * width, x_labels)
     plt.legend(loc = 'best')
+
+    # Save plot as .pdf file
+    plt.savefig("fig7_3_python.pdf")
     plt.show()
 
 def plot_EE(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FCN_list):
@@ -200,6 +208,10 @@ def plot_EE(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FCN
     # Set the size of figure
     plt.figure(figsize = (8.53, 4.8))
 
+    # Show the major grid lines with dark grey lines
+    plt.rc('axes', axisbelow = True)
+    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
+
     # Each bar will be shifted 'width' units from the previous one
     plt.bar(x_index, CA_list, width, color = '#1f77b4', label = 'CA')
     plt.bar(x_index + 1 * width, CNN_SPP_list, width, color = '#ff7f0e', label = 'CNN-SPP')
@@ -221,13 +233,13 @@ def plot_EE(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FCN
 
     # Set the label for the x-axis
     plt.xlabel('(Number of CUEs, Number of D2D pairs)')
-    
-    # Show the major grid lines with dark grey lines
-    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
 
     # Set the tick locations and labels of the x-axis
     plt.xticks(x_index + 1.5 * width, x_labels)
     plt.legend(loc = 'best')
+
+    # Save plot as .pdf file
+    plt.savefig("fig7_1_python.pdf")
     plt.show()
 
 def plot_UIR(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FCN_list):
@@ -277,6 +289,10 @@ def plot_UIR(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FC
     # Set the size of figure
     plt.figure(figsize = (8.53, 4.8))
 
+    # Show the major grid lines with dark grey lines
+    plt.rc('axes', axisbelow = True)
+    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
+
     # Each bar will be shifted 'width' units from the previous one
     plt.bar(x_index, CA_list, width, color = '#1f77b4', label = 'CA')
     plt.bar(x_index + 1 * width, CNN_SPP_list, width, color = '#ff7f0e', label = 'CNN-SPP')
@@ -299,13 +315,13 @@ def plot_UIR(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FC
     # Set the label for the x-axis
     plt.xlabel('(Number of CUEs, Number of D2D pairs)')
 
-    # Show the major grid lines with dark grey lines
-    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
-
     # Set the tick locations and labels of the x-axis and y-axis
     plt.xticks(x_index + 1.5 * width, x_labels)
     plt.yticks(y_index, y_labels)
     plt.legend(loc = 'best')
+
+    # Save plot as .pdf file
+    plt.savefig("fig7_6_python.pdf")
     plt.show()
 
 def plot_RIR(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FCN_list):
@@ -355,6 +371,10 @@ def plot_RIR(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FC
     # Set the size of figure
     plt.figure(figsize = (8.53, 4.8))
 
+    # Show the major grid lines with dark grey lines
+    plt.rc('axes', axisbelow = True)
+    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
+
     # Each bar will be shifted 'width' units from the previous one
     plt.bar(x_index, CA_list, width, color = '#1f77b4', label = 'CA')
     plt.bar(x_index + 1 * width, CNN_SPP_list, width, color = '#ff7f0e', label = 'CNN-SPP')
@@ -377,13 +397,13 @@ def plot_RIR(mode, num_of_CUEs, num_of_D2Ds, CA_list, CNN_SPP_list, CNN_list, FC
     # Set the label for the x-axis
     plt.xlabel('(Number of CUEs, Number of D2D pairs)')
 
-    # Show the major grid lines with dark grey lines
-    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
-
     # Set the tick locations and labels of the x-axis and y-axis
     plt.xticks(x_index + 1.5 * width, x_labels)
     plt.yticks(y_index, y_labels)
     plt.legend(loc = 'best')
+
+    # Save plot as .pdf file
+    plt.savefig("fig7_7_python.pdf")
     plt.show()
 
 def plot_NN_computational_time(num_of_CUEs, num_of_D2Ds, CNN_SPP_list, CNN_list, FCN_list):
@@ -429,6 +449,10 @@ def plot_NN_computational_time(num_of_CUEs, num_of_D2Ds, CNN_SPP_list, CNN_list,
     CNN_list = [time * 1000 for time in CNN_list]
     FCN_list = [time * 1000 for time in FCN_list]
 
+    # Show the major grid lines with dark grey lines
+    plt.rc('axes', axisbelow = True)
+    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
+
     # Each bar will be shifted 'width' units from the previous one
     plt.bar(x_index, CNN_SPP_list, width, color = '#ff7f0e',label = 'CNN-SPP')
     plt.bar(x_index + 1 * width, CNN_list, width, color = '#2ca02c', label = 'CNN')
@@ -440,13 +464,13 @@ def plot_NN_computational_time(num_of_CUEs, num_of_D2Ds, CNN_SPP_list, CNN_list,
  
     # Set the label for the x-axis
     plt.xlabel('(Number of CUEs, Number of D2D pairs)')
-    
-    # Show the major grid lines with dark grey lines
-    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
 
     # Set the tick locations and labels of the x-axis
     plt.xticks(x_index + 1 * width, x_labels)
     plt.legend(loc = 'best')
+
+    # Save plot as .pdf file
+    plt.savefig("fig7_5_python.pdf")
     plt.show()
 
 def plot_CA_computational_time(num_of_CUEs, num_of_D2Ds, CA_list):
@@ -481,6 +505,10 @@ def plot_CA_computational_time(num_of_CUEs, num_of_D2Ds, CA_list):
     # Set the size of figure
     plt.figure(figsize = (8.53, 4.8))
 
+    # Show the major grid lines with dark grey lines
+    plt.rc('axes', axisbelow = True)
+    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
+
     # Plot the bar
     plt.bar(x_index, CA_list, width, color = '#1f77b4', label = 'CA')
 
@@ -490,11 +518,11 @@ def plot_CA_computational_time(num_of_CUEs, num_of_D2Ds, CA_list):
  
     # Set the label for the x-axis
     plt.xlabel('(Number of CUEs, Number of D2D pairs)')
-    
-    # Show the major grid lines with dark grey lines
-    plt.grid(axis = 'y', color = '#666666', linestyle = '-')
 
     # Set the tick locations and labels of the x-axis
     plt.xticks(x_index, x_labels)
     plt.legend(loc = 'best')
+
+    # Save plot as .pdf file
+    plt.savefig("fig7_4_python.pdf")
     plt.show()
